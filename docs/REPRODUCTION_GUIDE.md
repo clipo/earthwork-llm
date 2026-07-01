@@ -23,7 +23,7 @@ point clouds; the ImageServer path does not use it.
 The 3DEP ImageServer occasionally returns a transient 502 for a tile; the
 scanner logs it and continues, and re-running fills any gap.
 
-## §3.3 — Jaketown shield case study (Figure 8)
+## §3.3 — Jaketown shield case study (Figure 7)
 
 ```bash
 python scripts/regional_earthwork_scanner.py \
@@ -51,14 +51,14 @@ Without `--noise-map` the scanner still runs and logs that USGS/HTMC screening i
 inactive; the shield then relies on NLCD land cover and footprint linearity
 alone, and the exact funnel counts differ.
 
-## §3.4 — Lake George canopy negative & Winterville positive control (Figs 9, 10)
+## §3.4 — Lake George canopy negative & Winterville positive control (Figs 8, 9)
 
 Re-run the scan at the true Lake George Mound A site (32.785, −90.785) and at
 Winterville Mound A (see `data/reference/published_sites.csv`); the Lake George
 AOI returns a near-flat surface (canopy), while Winterville plainly resolves the
 ~12 m platform. `scripts/build_correct.py` renders the relief panels.
 
-## §3.5 — Agricultural-island shield behavior (Figure 11)
+## §3.5 — Agricultural-island shield behavior (Figure 10)
 
 Run the scanner over a Cultivated-Crops tract; compact rises are kept as islands
 while linear plow/road/canal features are rejected. The positive-relief +
@@ -72,7 +72,7 @@ Requires the 35-mound reference set, which is **not** distributed (DATA_POLICY.m
 ```bash
 export EARTHWORK_GOLD_LIST=/path/to/located_mounds.csv
 python scripts/refind_utm.py       # recall at 10/15/20/25/30 m in UTM 15N + offsets
-python scripts/gen_fig6_utm.py     # regenerates Figure 7 from the UTM run
+python scripts/gen_fig6_utm.py     # regenerates Figure 6 (one panel per distinct site) from the UTM run
 ```
 
 `refind_utm.py` fetches a 300 m tile centered on each reference point in UTM
@@ -116,7 +116,9 @@ python scripts/shell_ring_test.py   # UTM 17N; per-sector oval/arc-tolerant ring
 
 Writes `shell_ring_results.csv` and `shell_ring_gallery.png`. The catalogue point
 falls within a detected ring footprint for 7 of 10 sites (manuscript Section 3.7,
-Figure 12); a production ring detector and transferable discrimination are future work.
+Figure 11); a production ring detector and transferable discrimination are future work.
+`generate_shell_ring_fig.py` rebuilds the Figure 11 map/signature/gallery panel
+(needs `pip install cartopy` for the location map).
 
 ## The vision-language layer (optional)
 
