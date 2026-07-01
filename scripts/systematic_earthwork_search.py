@@ -7,7 +7,7 @@ runs the TerraLLM detection pipeline, and validates results.
 
 Usage:
     python scripts/systematic_earthwork_search.py \
-        --gold-list /Users/clipo/PycharmProjects/yazoo/data/reference/located_mounds.csv \
+        --gold-list $EARTHWORK_GOLD_LIST  # restricted; not shipped \
         --out-dir data/validation_results
 """
 
