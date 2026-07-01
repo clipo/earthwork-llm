@@ -9,11 +9,19 @@ with no API key and no local data.
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
-pip install -e .          # earthwork_llm + requirements.txt
+pip install -e .          # earthwork_llm + requirements.txt (the full core path)
 ```
 
-`pdal` is needed only if you re-ground-filter raw point clouds; the ImageServer
-path used throughout needs only the pip requirements.
+The core path — 3DEP ImageServer fetch, geomorphon detector, False Positive
+Shield, and the Section 3.1 validation — needs only the base install; it was
+verified end to end from a clean environment. Optional extras enable optional
+inputs: `pip install -e .[quads]` (plus `poppler` and a `conda`-installed PDAL/GDAL)
+to build the USGS-quad noise map; `.[gcs]` to write to a cloud bucket; `.[vlm]`
+to serve the interpretation layer. `pdal` is needed only to re-ground-filter raw
+point clouds; the ImageServer path does not use it.
+
+The 3DEP ImageServer occasionally returns a transient 502 for a tile; the
+scanner logs it and continues, and re-running fills any gap.
 
 ## §3.3 — Jaketown shield case study (Figure 7)
 
@@ -28,6 +36,20 @@ Produces `regional_detections.{csv,geojson}`; the shield funnel (277 raw →
 197 rejected → 80 survivors) is tabulated from the `shield_decision` column.
 `scripts/build_review.py data/scan_jaketown` builds relief thumbnails for the
 survivor review UI (`scripts/review_server.py`).
+
+The reported funnel used a modern-feature **noise map** so the shield could
+reject canal- and levee-margin candidates from USGS quads. Build it (optional)
+with `pip install -e .[quads]` and:
+
+```bash
+python scripts/generate_yazoo_noise_map.py --bbox=-90.4949,33.1752,-90.4746,33.1955 \
+  --out data/jaketown_noise.geojson
+# then pass it to the scanner:  --noise-map data/jaketown_noise.geojson
+```
+
+Without `--noise-map` the scanner still runs and logs that USGS/HTMC screening is
+inactive; the shield then relies on NLCD land cover and footprint linearity
+alone, and the exact funnel counts differ.
 
 ## §3.4 — Lake George canopy negative & Winterville positive control (Figs 8, 9)
 
