@@ -21,6 +21,7 @@ publication or public-status citation.
   ablation, which carries site coordinates. The coordinate-free verdict results
   (`data/vlm_ablation/ablation_results.csv`) are shipped; the coordinates are not.
 - Any per-scan detection output that reports coordinates near unpublished sites.
+- The South Carolina shell-ring gold list (`SC_Gold_List.csv`, Davis 2018/2019) used for the Section 3.7 generalization test, which carries site coordinates. Provide it via `SHELL_RING_GOLD`.
 - Any state site-file coordinates.
 
 `.gitignore` blocks `located_mounds.csv`, `*goldlist*.csv`, `validation_summary.csv`,

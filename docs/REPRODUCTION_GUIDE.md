@@ -103,6 +103,21 @@ modern-earthwork rejection). The shipped run gives 4 of 6 mounds kept and only
 3 of 22 modern earthworks rejected: the model reads mound-like shape but does
 not filter for age, which is the shield's job (manuscript Section 3.6).
 
+## §3.7 — Shell-ring generalization test (RESTRICTED gold list)
+
+Tests generalization to Davis's coastal South Carolina shell rings (a different
+feature type and region) on the same public 3DEP product, no retraining. Needs the
+SC gold list, which carries site coordinates and is **not** shipped (DATA_POLICY.md).
+
+```bash
+export SHELL_RING_GOLD=/path/to/SC_Gold_List.csv
+python scripts/shell_ring_test.py   # UTM 17N; per-sector oval/arc-tolerant ring detector
+```
+
+Writes `shell_ring_results.csv` and `shell_ring_gallery.png`. The catalogue point
+falls within a detected ring footprint for 7 of 10 sites (manuscript Section 3.7,
+Figure 12); a production ring detector and transferable discrimination are future work.
+
 ## The vision-language layer (optional)
 
 Required only for the Section 3.6 ablation above. `pip install -r requirements-vlm.txt`, then
