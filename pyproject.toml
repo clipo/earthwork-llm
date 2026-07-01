@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "earthwork-llm"
+version = "0.1.0"
+description = "Label-free / zero-shot LiDAR screening for pre-European earthen mounds"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [
+  { name = "C. P. Lipo" }, { name = "D. S. Davis" }, { name = "R. J. DiNapoli" },
+]
+dependencies = [
+  "numpy>=1.26", "scipy>=1.11", "rasterio>=1.3", "requests>=2.31",
+  "matplotlib>=3.7", "pandas>=2.0", "geopandas>=0.14", "shapely>=2.0",
+  "pyproj>=3.6", "opencv-python-headless>=4.10", "Pillow>=10.0",
+]
+
+[project.optional-dependencies]
+vlm = ["vllm>=0.6", "torch>=2.4", "transformers>=4.45", "peft>=0.13"]
+
+[tool.setuptools.packages.find]
+where = ["src"]

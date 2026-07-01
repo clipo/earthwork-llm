@@ -1,0 +1,4 @@
+site_id,site_name,trinomial,latitude,longitude,type,source
+winterville_mound_a,Winterville Mound A,22-Ws-500,33.485710,-91.059944,platform_mound,"Brain 1989; Winterville Mounds State Park (public monument)"
+lake_george_mound_a,Lake George (Holly Bluff) Mound A,22-Yz-557,32.7848,-90.7851,platform_mound,"Williams & Brain 1983 (published site coordinate)"
+jaketown,Jaketown complex,22-Hu-505,33.1755,-90.4932,mound_complex,"Ford Phillips & Haag 1955; National Historic Landmark (public)"

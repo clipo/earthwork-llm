@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+build/
+dist/
+
+# Model weights (host on Hugging Face, not git)
+checkpoints/
+*.safetensors
+*.pt
+*.bin
+
+# Generated data, DEM cache, scan outputs, review packages
+data/**
+!data/reference/
+data/reference/**
+!data/reference/published_sites.csv
+
+# RESTRICTED: never commit site coordinates other than the published-sites file
+**/located_mounds.csv
+**/validation_summary.csv
+**/*goldlist*.csv

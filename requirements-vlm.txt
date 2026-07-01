@@ -1,0 +1,5 @@
+# Optional: only needed to serve the vision-language interpretation layer.
+vllm>=0.6
+torch>=2.4
+transformers>=4.45
+peft>=0.13
