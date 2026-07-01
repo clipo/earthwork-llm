@@ -120,6 +120,25 @@ Figure 11); a production ring detector and transferable discrimination are futur
 `generate_shell_ring_fig.py` rebuilds the Figure 11 map/signature/gallery panel
 (needs `pip install cartopy` for the location map).
 
+## Appendix B companions: baseline, shield test, negative control
+
+```bash
+# B.1 baseline: LRM blob detector under the identical recall protocol
+export EARTHWORK_GOLD_LIST=/path/to/located_mounds.csv   # restricted
+python scripts/lrm_baseline.py            # 22/35 at 30 m vs geomorphons' 31/35
+
+# B.3 shield discrimination on the Eskew set (NLCD + linearity; proximity inactive)
+export EARTHWORK_ABLATION_SET=/path/to/mounds_seed.csv   # restricted
+python scripts/shield_eskew_test.py       # mounds 6/6 kept; modern earthworks 2/22 rejected
+
+# §3.7 negative control: frozen ring detector at decoy points 500 m off-site
+export SHELL_RING_GOLD=/path/to/SC_Gold_List.csv         # restricted
+python scripts/ring_negative_control.py   # decoys score ~52%/65%, i.e. chance
+
+# §3.6 arm B: context-conditioned ablation (adds a 600 m wide view; needs served model)
+python scripts/vlm_ablation_context.py
+```
+
 ## The vision-language layer (optional)
 
 Required only for the Section 3.6 ablation above. `pip install -r requirements-vlm.txt`, then
