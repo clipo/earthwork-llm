@@ -6,16 +6,16 @@ Yazoo Basin"* (Lipo, Davis, and DiNapoli; submitted to *Archaeological
 Prospection*). The manuscript is in [`docs/MANUSCRIPT.md`](docs/MANUSCRIPT.md).
 
 The workflow screens public bare-earth LiDAR for compact mound-like features
-using **no labelled examples from the target landscape**: a deterministic
+using **no labeled examples from the target landscape**: a deterministic
 multi-scale geomorphon detector, a context-aware False-Positive Shield
-(land-cover + mapped modern features + footprint linearity), and — as a proposed
-component whose end-to-end contribution is not yet measured — a fine-tuned,
-zero-shot vision-language interpretation layer.
+(land-cover + mapped modern features + footprint linearity), and a fine-tuned,
+zero-shot vision-language interpretation layer whose contribution is measured in
+Section 3.6.
 
 ## What runs from public data alone
 
 Everything except the vision-language layer runs on the seamless USGS 3DEP
-ImageServer with no API key, no local data, and no labelled mounds:
+ImageServer with no API key, no local data, and no labeled mounds:
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
@@ -50,8 +50,8 @@ The fine-tuned model (Qwen3-VL-30B-A3B-Thinking + QLoRA adapter, trained
 zero-shot on New York State LiDAR) is served separately and is **not** required
 for the detection results above. Weights are released via Hugging Face (see the
 manuscript's Data and Code Availability); serve with `scripts/serve_yazoo_model.sh`
-and `pip install -r requirements-vlm.txt`. Its contribution to detection is not
-yet measured (an ablation is identified as future work in the manuscript).
+and `pip install -r requirements-vlm.txt`. Its contribution is measured in Section 3.6: it reads mound-like shape but does
+not separate pre-European from modern earthworks.
 
 ## Layout
 

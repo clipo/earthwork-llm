@@ -1,8 +1,8 @@
 # Reproduction guide
 
 How to reproduce the manuscript's results from public data. Everything below,
-except the Table 1 recall evaluation (which needs the restricted reference set,
-see [DATA_POLICY.md](DATA_POLICY.md)), runs on the seamless USGS 3DEP ImageServer
+except the Table 1 recall evaluation and the Section 3.6 ablation (which need
+restricted data, see [DATA_POLICY.md](DATA_POLICY.md)), runs on the seamless USGS 3DEP ImageServer
 with no API key and no local data.
 
 ## Setup
@@ -23,7 +23,7 @@ point clouds; the ImageServer path does not use it.
 The 3DEP ImageServer occasionally returns a transient 502 for a tile; the
 scanner logs it and continues, and re-running fills any gap.
 
-## §3.3 — Jaketown shield case study (Figure 7)
+## §3.3 — Jaketown shield case study (Figure 8)
 
 ```bash
 python scripts/regional_earthwork_scanner.py \
@@ -51,14 +51,14 @@ Without `--noise-map` the scanner still runs and logs that USGS/HTMC screening i
 inactive; the shield then relies on NLCD land cover and footprint linearity
 alone, and the exact funnel counts differ.
 
-## §3.4 — Lake George canopy negative & Winterville positive control (Figs 8, 9)
+## §3.4 — Lake George canopy negative & Winterville positive control (Figs 9, 10)
 
 Re-run the scan at the true Lake George Mound A site (32.785, −90.785) and at
 Winterville Mound A (see `data/reference/published_sites.csv`); the Lake George
 AOI returns a near-flat surface (canopy), while Winterville plainly resolves the
 ~12 m platform. `scripts/build_correct.py` renders the relief panels.
 
-## §3.5 — Agricultural-island shield behaviour (Figure 10)
+## §3.5 — Agricultural-island shield behavior (Figure 11)
 
 Run the scanner over a Cultivated-Crops tract; compact rises are kept as islands
 while linear plow/road/canal features are rejected. The positive-relief +
@@ -72,11 +72,11 @@ Requires the 35-mound reference set, which is **not** distributed (DATA_POLICY.m
 ```bash
 export EARTHWORK_GOLD_LIST=/path/to/located_mounds.csv
 python scripts/refind_utm.py       # recall at 10/15/20/25/30 m in UTM 15N + offsets
-python scripts/gen_fig6_utm.py     # regenerates Figure 6 from the UTM run
+python scripts/gen_fig6_utm.py     # regenerates Figure 7 from the UTM run
 ```
 
-`refind_utm.py` fetches a 300 m tile centred on each reference point in UTM
-Zone 15N (true metres), runs the single-scale geomorphon detector
+`refind_utm.py` fetches a 300 m tile centered on each reference point in UTM
+Zone 15N (true meters), runs the single-scale geomorphon detector
 (`classify_geomorphon_simple`, 5 m radius, 0.3 m flatness) plus
 `detect_earthworks`, and scores a hit if any of the detector's ten candidates
 falls within the tolerance.
@@ -105,14 +105,14 @@ not filter for age, which is the shield's job (manuscript Section 3.6).
 
 ## The vision-language layer (optional)
 
-Not required for any result above. `pip install -r requirements-vlm.txt`, then
+Required only for the Section 3.6 ablation above. `pip install -r requirements-vlm.txt`, then
 `scripts/serve_yazoo_model.sh` on a CUDA host to serve the V9.1 adapter (weights
 via Hugging Face; see the manuscript). Passing `--api-url` to the scanner then
-sends shield survivors to the model. Its contribution to detection is not yet
-measured; the manuscript identifies the ablation as future work.
+sends shield survivors to the model. Its contribution is measured in Section 3.6: it reads mound-like shape but does
+not separate pre-European from modern earthworks (that is the shield's job).
 
 ## Notes on coordinate systems
 
 Table 1 (recall) is computed in UTM Zone 15N (EPSG:26915) so distances are true
-metres. The regional scanner runs in Web Mercator (EPSG:3857); at ~33° N its
+meters. The regional scanner runs in Web Mercator (EPSG:3857); at ~33° N its
 distances are ~19% and areas ~42% larger than true ground (see manuscript §2.1).
