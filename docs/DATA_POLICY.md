@@ -17,6 +17,9 @@ publication or public-status citation.
 - The 35-mound reference set used for the Table 1 recall evaluation
   (`located_mounds.csv`), which draws on Lower Mississippi Survey grid-quadrat
   coordinates of restricted precision.
+- The Eskew ground-survey eval set (`mounds_seed.csv`) used for the Section 3.6
+  ablation, which carries site coordinates. The coordinate-free verdict results
+  (`data/vlm_ablation/ablation_results.csv`) are shipped; the coordinates are not.
 - Any per-scan detection output that reports coordinates near unpublished sites.
 - Any state site-file coordinates.
 
@@ -31,7 +34,10 @@ run:
 ```bash
 export EARTHWORK_GOLD_LIST=/path/to/located_mounds.csv   # not distributed here
 python scripts/refind_utm.py       # Table 1 recall-vs-tolerance, UTM 15N
-python scripts/gen_fig6_utm.py     # Figure 6
+python scripts/gen_fig6_utm.py     # Figure 7
+
+export EARTHWORK_ABLATION_SET=/path/to/mounds_seed.csv   # not distributed here
+python scripts/vlm_ablation.py     # Section 3.6 ablation (also needs a served model)
 ```
 
 ## Contributing

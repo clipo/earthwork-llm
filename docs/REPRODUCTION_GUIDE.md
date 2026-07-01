@@ -81,6 +81,28 @@ Zone 15N (true metres), runs the single-scale geomorphon detector
 `detect_earthworks`, and scores a hit if any of the detector's ten candidates
 falls within the tolerance.
 
+## §3.6 — Interpretation-layer ablation, Table 2 (RESTRICTED eval set + served model)
+
+Tests whether the fine-tuned model separates real mounds from modern earthworks
+on Eskew's field-verified set. Needs a served model (see below) and the eval set,
+which carries coordinates and is **not** distributed (DATA_POLICY.md). The
+coordinate-free verdict results are provided at
+`data/vlm_ablation/ablation_results.csv` and `ablation_summary.json`.
+
+```bash
+export EARTHWORK_ABLATION_SET=/path/to/mounds_seed.csv
+export VLM_API=http://localhost:8000/v1/chat/completions
+export VLM_MODEL=terrallm-v91
+python scripts/vlm_ablation.py            # 3 runs per site, majority vote
+```
+
+`vlm_ablation.py` fetches a ~160 m UTM tile per site, builds the same six-panel
+image the scanner sends the model, asks for a MOUND / NOT_MOUND verdict, and
+scores the majority vote against field truth (confusion matrix, recall,
+modern-earthwork rejection). The shipped run gives 4 of 6 mounds kept and only
+3 of 22 modern earthworks rejected: the model reads mound-like shape but does
+not filter for age, which is the shield's job (manuscript Section 3.6).
+
 ## The vision-language layer (optional)
 
 Not required for any result above. `pip install -r requirements-vlm.txt`, then

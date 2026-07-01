@@ -1,0 +1,12 @@
+{
+  "n": 28,
+  "unscored": 0,
+  "tp": 4,
+  "fn": 2,
+  "tn": 3,
+  "fp": 19,
+  "accuracy": 0.25,
+  "mound_recall": 0.6666666666666666,
+  "modern_rejection": 0.13636363636363635,
+  "precision": 0.17391304347826086
+}
