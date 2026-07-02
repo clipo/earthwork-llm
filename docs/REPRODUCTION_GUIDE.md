@@ -130,6 +130,7 @@ python scripts/lrm_baseline.py            # 22/35 at 30 m vs geomorphons' 31/35
 # B.3 shield discrimination on the Eskew set (NLCD + linearity; proximity inactive)
 export EARTHWORK_ABLATION_SET=/path/to/mounds_seed.csv   # restricted
 python scripts/shield_eskew_test.py       # mounds 6/6 kept; modern earthworks 2/22 rejected
+python scripts/shield_eskew_proximity.py  # adds OSM/Overpass proximity layer (open-source noise map): 3/22 + 6 flagged
 
 # §3.7 negative control: frozen ring detector at decoy points 500 m off-site
 export SHELL_RING_GOLD=/path/to/SC_Gold_List.csv         # restricted
