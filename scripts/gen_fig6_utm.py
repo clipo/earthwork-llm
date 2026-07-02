@@ -42,19 +42,18 @@ for i,mid in enumerate(picks):
     for c in cands:
         d=math.hypot(c["x"]-gpx,c["y"]-gpy)
         if d<bd: bd=d; best=c
-    ax.imshow(make_hillshade(dem),cmap="gray",origin="lower")
-    # note: make_hillshade origin lower -> flip y for plotting markers
-    H=dem.shape[0]
-    ax.plot(gpx,H-gpy,marker="*",ms=15,mfc="cyan",mec="k",mew=1.0)
+    # north-up display; a marker at data (x, y) overlays array pixel [y, x]
+    ax.imshow(make_hillshade(dem),cmap="gray")
+    ax.plot(gpx,gpy,marker="*",ms=15,mfc="cyan",mec="k",mew=1.0)
     d_m=bd*RES
     if best is not None and d_m<=30:
-        ax.add_patch(plt.Circle((best["x"],H-best["y"]),12,fill=False,ec="lime",lw=2))
+        ax.add_patch(plt.Circle((best["x"],best["y"]),12,fill=False,ec="lime",lw=2))
     ax.set_title(f"{mid}  {d_m:.0f} m",fontsize=9,color="green"); ax.set_xticks([]); ax.set_yticks([])
 # histogram + summary from UTM offsets
 d=rec["dist_m"]
 axh=fig.add_subplot(gs[0,4]); axh.hist(d,bins=np.arange(0,32,3),color="#2e7d32",edgecolor="k")
 axh.axvline(d.median(),color="red",ls="--",lw=1.5)
-axh.set_title("Offset, all 31 recovered",fontsize=8)
+axh.set_title(f"Offset, all {len(rec)} recovered",fontsize=8)
 axh.set_xlabel("distance (m)",fontsize=8); axh.set_ylabel("mounds",fontsize=8); axh.tick_params(labelsize=7)
 axt=fig.add_subplot(gs[1,4]); axt.axis("off")
 # no in-image caption text: captions belong to the manuscript, and the summary
