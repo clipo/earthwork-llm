@@ -1,0 +1,55 @@
+### CONTROL fine-tune: replay-only (no discrimination drills). Isolates whether
+### the V10 rejection gain comes from the drill content or from any small
+### rubric-era LoRA fine-tune (manuscript B.3, attribution control).
+### V10 DISCRIMINATION training via LLaMA-Factory — bf16 LoRA variant
+### Base: Qwen3-VL-30B-A3B-Thinking. bf16 weights (~61 GB) + LoRA fits in the
+### GB10's 121 GB unified memory.
+### RESOLVED 2026-07-02: NaN gradients in every config (4-bit and bf16 alike)
+### were caused by the GB10's pre-release torch 2.10.0a0 build, not by
+### quantization. Stable torch 2.12.1+cu130 (official aarch64 wheel,
+### https://download.pytorch.org/whl/cu130) trains cleanly with this config.
+### Created: 2026-07-02 — derived from v10_discrimination.yaml
+
+### model
+model_name_or_path: Qwen/Qwen3-VL-30B-A3B-Thinking
+image_max_pixels: 200704
+trust_remote_code: true
+
+### method — proven recipe minus quantization
+stage: sft
+do_train: true
+finetuning_type: lora
+lora_rank: 64
+lora_alpha: 128
+lora_dropout: 0.05
+lora_target: all
+freeze_vision_tower: true
+
+### dataset — discrimination drills + light replay
+dataset_dir: lf_data
+dataset: geomorphon_v6_1k
+template: qwen3_vl
+cutoff_len: 1024
+max_samples: 40000
+preprocessing_num_workers: 8
+dataloader_num_workers: 2
+
+### output
+output_dir: checkpoints/v10_control_replay
+logging_steps: 5
+save_steps: 75
+plot_loss: true
+overwrite_output_dir: true
+save_only_model: false
+report_to: none
+
+### train
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 16
+learning_rate: 0.00001
+num_train_epochs: 2
+lr_scheduler_type: cosine
+warmup_ratio: 0.03
+bf16: true
+gradient_checkpointing: true
+ddp_timeout: 180000000
