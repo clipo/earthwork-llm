@@ -1,9 +1,10 @@
 # EarthworkLLM — label-free LiDAR screening for earthen mounds
 
-Reproducibility code for *"Toward Label-Free Archaeological Prospection: Zero-Shot
-Detection of Pre-European Earthworks from Public LiDAR in the Yazoo Basin and
-Coastal South Carolina"* (Lipo, Davis, and DiNapoli; submitted to *Archaeological
-Prospection*). The manuscript is in [`docs/MANUSCRIPT.md`](docs/MANUSCRIPT.md).
+Reproducibility code for *"Toward Label-Free Archaeological Prospection:
+Training-Free Detection and Zero-Shot Interpretation of Pre-European Earthworks
+from Public LiDAR in the Yazoo Basin and Coastal South Carolina"* (Lipo, Davis,
+and DiNapoli; submitted to *Archaeological Prospection*). The manuscript is in
+[`docs/MANUSCRIPT.md`](docs/MANUSCRIPT.md).
 
 The workflow screens public bare-earth LiDAR for compact mound-like features
 using **no labeled examples from the target landscape**: a deterministic
@@ -50,8 +51,12 @@ The fine-tuned model (Qwen3-VL-30B-A3B-Thinking + QLoRA adapter, trained
 zero-shot on New York State LiDAR) is served separately and is **not** required
 for the detection results above. Weights are released via Hugging Face (see the
 manuscript's Data and Code Availability); serve with `scripts/serve_yazoo_model.sh`
-and `pip install -r requirements-vlm.txt`. Its contribution is measured in Section 3.6: it reads mound-like shape but does
-not separate pre-European from modern earthworks.
+and `pip install -r requirements-vlm.txt`. Its contribution is measured in
+Section 3.6: zero-shot, it reads mound-like shape but does not separate
+pre-European from modern earthworks under any prompt. Fine-tuned on
+discrimination drills built from New York terrain alone (the V10 arm,
+Appendix B.3), it recovers a partial age signal (8 of 21 modern earthworks
+rejected, vote-share AUC 0.62) that does not yet transfer between regions.
 
 ## Layout
 

@@ -114,18 +114,20 @@ export SHELL_RING_GOLD=/path/to/SC_Gold_List.csv
 python scripts/shell_ring_test.py   # UTM 17N; per-sector oval/arc-tolerant ring detector
 ```
 
-Writes `shell_ring_results.csv` and `shell_ring_gallery.png`. The catalogue point
-falls within a detected ring footprint for 7 of 10 sites (manuscript Section 3.7,
-Figure 11); a production ring detector and transferable discrimination are future work.
-`generate_shell_ring_fig.py` rebuilds the Figure 11 map/signature/gallery panel
+Writes `shell_ring_results.csv` and `shell_ring_gallery.png`. Against the
+hand-corrected ring centers the detector localizes 4 of 10 rings within the rim
+crest and 7 of 10 within the ring footprint (manuscript Section 3.7, Table B2),
+which the decoy-point control below shows is the chance expectation; a working
+ring detector and transferable discrimination are future work.
+`generate_shell_ring_fig.py` rebuilds the Figure 12 map/signature/gallery panel
 (needs `pip install cartopy` for the location map).
 
 ## Appendix B companions: baseline, shield test, negative control
 
 ```bash
 # B.1 baseline: LRM blob detector under the identical recall protocol
-export EARTHWORK_GOLD_LIST=/path/to/located_mounds.csv   # restricted
-python scripts/lrm_baseline.py            # 22/35 at 30 m vs geomorphons' 31/35
+export EARTHWORK_GOLD_LIST=/path/to/located_mounds_corrected.csv   # restricted
+python scripts/lrm_baseline.py            # 22/34 at 30 m vs geomorphons' 28/34 (corrected centers)
 
 # B.3 shield discrimination on the Eskew set (NLCD + linearity; proximity inactive)
 export EARTHWORK_ABLATION_SET=/path/to/mounds_seed.csv   # restricted
@@ -138,15 +140,48 @@ python scripts/ring_negative_control.py   # decoys score ~52%/65%, i.e. chance
 
 # §3.6 arm B: context-conditioned ablation (adds a 600 m wide view; needs served model)
 python scripts/vlm_ablation_context.py
+
+# §3.6 arm C: strongest zero-shot protocol (wide view + OSM feature text + rubric + 9 votes)
+python scripts/vlm_ablation_armc.py       # 6/6 mounds kept, 0/22 moderns rejected, AUC 0.33
 ```
+
+## B.3 — The learnability arm (V10): fine-tuned discrimination
+
+The fifth arm of the Section 3.6 test. The drill generator uses only public
+New York 3DEP terrain and OpenStreetMap (UTM 18N; no Delta or coastal data),
+so it runs with no restricted inputs. Evaluation needs the restricted sets and
+a served model.
+
+```bash
+# 1,400 composite discrimination drills (700 OSM-adjacent negatives, 700 synthetic mounds)
+python scripts/generate_discrimination_v10.py
+
+# LoRA fine-tune on the drills (rank 64, lr 1e-5, 2 epochs, bf16 base; see manuscript B.3),
+# then evaluate both adapters under the identical composite protocol:
+export EARTHWORK_ABLATION_SET=/path/to/mounds_seed.csv          # restricted
+export SHELL_RING_GOLD=/path/to/SC_Gold_List_corrected.csv      # restricted
+VLM_MODEL=terrallm-v10 python scripts/vlm_eval_v10.py --set eskew --out data/v10_eval/eskew_v10.csv
+VLM_MODEL=terrallm-v91 python scripts/vlm_eval_v10.py --set eskew --out data/v10_eval/eskew_v91same.csv
+VLM_MODEL=terrallm-v10 python scripts/vlm_eval_v10.py --set sc    --out data/v10_eval/sc_v10.csv
+
+# Figure 11 rebuilds from the released coordinate-free outputs alone:
+python scripts/generate_discrimination_fig.py
+```
+
+Shipped results (`data/v10_eval/`, coordinate-free): V10 keeps 5/6 mounds and
+rejects 8/21 moderns (vote-share AUC 0.62) against the base model's 6/6 and
+1/22 (AUC 0.48) under the same protocol; on the SC set V10 keeps 9/10 rings
+but rejects 0/10 decoys, so the learned rejection does not transfer.
 
 ## The vision-language layer (optional)
 
 Required only for the Section 3.6 ablation above. `pip install -r requirements-vlm.txt`, then
-`scripts/serve_yazoo_model.sh` on a CUDA host to serve the V9.1 adapter (weights
-via Hugging Face; see the manuscript). Passing `--api-url` to the scanner then
-sends shield survivors to the model. Its contribution is measured in Section 3.6: it reads mound-like shape but does
-not separate pre-European from modern earthworks (that is the shield's job).
+`scripts/serve_yazoo_model.sh` on a CUDA host to serve the V9.1 and V10 adapters
+(weights via Hugging Face; see the manuscript). Passing `--api-url` to the scanner
+then sends shield survivors to the model. Its contribution is measured in
+Section 3.6: zero-shot it reads mound-like shape but does not separate
+pre-European from modern earthworks under any prompt; fine-tuned on universal
+discrimination drills (V10) it recovers a partial, non-transferring age signal.
 
 ## Notes on coordinate systems
 
