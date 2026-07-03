@@ -42,7 +42,8 @@ CENTER_LABEL = {
 }
 
 GOLD_CSV = os.environ.get(
-    "EARTHWORK_GOLD_LIST", "data/reference/located_mounds.csv")  # RESTRICTED, not shipped
+    "EARTHWORK_GOLD_LIST",
+    "/home/clipo/projects/yazoo/data/reference/located_mounds.csv")
 # Fallback: reconstruct the gold coordinates from the validation summary.
 GOLD_FALLBACK = "data/gold_validation_full/validation_summary.csv"
 
@@ -54,7 +55,8 @@ EXTENT = [-91.7, -89.65, 32.25, 34.95]
 # Eskew (2008) ground-survey set: field-verified mounds and modern earthworks
 # used as the Section 3.6 discrimination test. Coordinates from the seed list.
 SEED_CSV = os.environ.get(
-    "EARTHWORK_ABLATION_SET", "data/reference/mounds_seed.csv")  # RESTRICTED, not shipped
+    "EARTHWORK_ABLATION_SET",
+    "/home/clipo/projects/yazoo/data/reference/mounds_seed.csv")
 
 
 def load_gold():
@@ -190,7 +192,7 @@ def main():
                label=f"Validation mound (n={len(gold)})",
                markerfacecolor="#f39c12", markeredgecolor="black", markersize=10),
         Line2D([0], [0], marker="D", color="w",
-               label=f"Eskew (2008) field-verified site (n={len(elons)})",
+               label=f"Age-discrimination test site (n={len(elons)})",
                markerfacecolor="#95a5a6", markeredgecolor="black", markersize=8),
     ]
     ax.legend(handles=legend_elements, loc="center right", fontsize=10,
