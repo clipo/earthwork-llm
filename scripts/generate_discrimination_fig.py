@@ -62,16 +62,16 @@ def main():
     k, r = shield_counts(f"{T}/data/shield_eskew/shield_eskew_proximity.csv", "verdict_full")
     arms.append(("Shield:\n+OSM proximity", k, r))
     k, r = vlm_counts(f"{T}/data/vlm_ablation/ablation_results.csv")
-    arms.append(("v9.1:\nimage only", k, r))
+    arms.append(("Model:\nimage only", k, r))
     for i in (1, 2, 3):
         k, r = vlm_counts(f"{T}/data/vlm_ablation_context/run{i}_results.csv")
-        arms.append((f"v9.1: +context\nreplicate {i}", k, r))
+        arms.append((f"Model + context:\nreplicate {i}", k, r))
     k, r = vlm_counts(f"{T}/data/vlm_ablation_armc/armc_results.csv")
-    arms.append(("v9.1: strongest\nprompt, 9 votes", k, r))
+    arms.append(("Model: strongest\nprompt, 9 votes", k, r))
     k, r = vlm_counts(f"{T}/data/v10_eval/eskew_v91same.csv")
-    arms.append(("v9.1: composite\nprotocol", k, r))
+    arms.append(("Model: composite\nprotocol (control)", k, r))
     k, r = vlm_counts(f"{T}/data/v10_eval/eskew_v10.csv")
-    arms.append(("V10: fine-tuned,\nsame protocol", k, r))
+    arms.append(("Fine-tuned:\nsame protocol", k, r))
 
     fig, (ax1, ax2, ax3) = plt.subplots(
         1, 3, figsize=(16.5, 5.2), gridspec_kw={"width_ratios": [2.1, 0.85, 0.85]})
@@ -131,9 +131,9 @@ def main():
         return auc
 
     auc_b = share_panel(ax2, f"{T}/data/vlm_ablation_armc/armc_results.csv",
-                        "MOUND-vote share, v9.1\n(strongest prompt, 9 votes)", "b")
+                        "MOUND-vote share, deployed model\n(strongest prompt, 9 votes)", "b")
     auc_c = share_panel(ax3, f"{T}/data/v10_eval/eskew_v10.csv",
-                        "MOUND-vote share, V10\n(fine-tuned, 5 votes)", "c")
+                        "MOUND-vote share, discrimination\nfine-tune (5 votes)", "c")
 
     fig.tight_layout()
     os.makedirs("docs/figures", exist_ok=True)
