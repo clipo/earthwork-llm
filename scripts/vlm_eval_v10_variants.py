@@ -15,9 +15,8 @@ Same env vars as vlm_eval_v10.py; --set eskew only.
 from __future__ import annotations
 import sys, argparse
 
-sys.path.insert(0, "/home/clipo/projects/terrallm")
-sys.path.insert(0, "/home/clipo/projects/terrallm/scripts")
-sys.path.insert(0, "/home/clipo/projects/earthwork-llm/src")
+sys.path.insert(0, "scripts")
+sys.path.insert(0, "src")
 
 from PIL import Image
 import vlm_eval_v10 as base

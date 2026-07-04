@@ -54,9 +54,12 @@ manuscript's Data and Code Availability); serve with `scripts/serve_yazoo_model.
 and `pip install -r requirements-vlm.txt`. Its contribution is measured in
 Section 3.6: zero-shot, it reads mound-like shape but does not separate
 pre-European from modern earthworks under any prompt. Fine-tuned on
-discrimination drills built from New York terrain alone (the V10 arm,
-Appendix B.3), it recovers a partial age signal (8 of 21 modern earthworks
-rejected, vote-share AUC 0.62) that does not yet transfer between regions.
+discrimination drills built from New York terrain alone, it rejects 8 of 21
+moderns against the base model's 1 of 22, but occlusion, transplant, and
+factorial controls show the filter reads visible modern context rather than
+age, most of the gain reproduces from synthetic positives alone, and two
+deployment tests (survivor ranking, agricultural-island collision) find no
+usable deployment role. The manuscript reports the arm as boundary-mapping.
 
 ## Layout
 

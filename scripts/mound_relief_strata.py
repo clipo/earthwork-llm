@@ -9,12 +9,10 @@ import os, sys
 import numpy as np, pandas as pd
 from scipy.ndimage import gaussian_filter
 
-sys.path.insert(0, "/home/clipo/projects/earthwork-llm/src")
+sys.path.insert(0, "src")
 from earthwork_llm.ingestion.imageserver import fetch_dem
 
-GOLD = os.environ.get(
-    "EARTHWORK_GOLD_LIST",
-    "/home/clipo/projects/yazoo/data/gold_correct/located_mounds_corrected.csv")
+GOLD = os.environ["EARTHWORK_GOLD_LIST"]  # restricted corrected centers (DATA_POLICY.md)
 HALF = 150
 
 
@@ -30,7 +28,7 @@ def local_relief(cx, cy):
 
 def main():
     gold = pd.read_csv(GOLD)
-    res = pd.read_csv("/home/clipo/projects/terrallm/data/refind_utm/refind_utm.csv")
+    res = pd.read_csv("data/refind_utm/refind_utm.csv")
     res["dist_m"] = pd.to_numeric(res["dist_m"], errors="coerce")
     hit = {r.mound_id: (r.status == "ok" and r.dist_m <= 30) for r in res.itertuples()}
     rows = []
@@ -44,7 +42,7 @@ def main():
         rows.append(dict(mound_id=mid, relief_m=round(rel, 2), recovered=bool(hit.get(mid, False))))
         print(f"  {mid}: relief {rel:.2f} m, recovered={hit.get(mid, False)}", flush=True)
     df = pd.DataFrame(rows)
-    df.to_csv("/home/clipo/projects/terrallm/data/refind_utm/mound_relief_strata.csv", index=False)
+    df.to_csv("data/refind_utm/mound_relief_strata.csv", index=False)
     print("\n===== recall by local-relief class (30 m tolerance) =====")
     for lo, hi, lab in [(0, 0.5, "<0.5 m"), (0.5, 1.5, "0.5-1.5 m"), (1.5, 99, ">1.5 m")]:
         sub = df[(df.relief_m >= lo) & (df.relief_m < hi)]

@@ -168,10 +168,43 @@ VLM_MODEL=terrallm-v10 python scripts/vlm_eval_v10.py --set sc    --out data/v10
 python scripts/generate_discrimination_fig.py
 ```
 
-Shipped results (`data/v10_eval/`, coordinate-free): V10 keeps 5/6 mounds and
-rejects 8/21 moderns (vote-share AUC 0.62) against the base model's 6/6 and
-1/22 (AUC 0.48) under the same protocol; on the SC set V10 keeps 9/10 rings
-but rejects 0/10 decoys, so the learned rejection does not transfer.
+Shipped results (`data/v10_eval/`, coordinate-free): the fine-tune keeps 5/6
+mounds and rejects 8/21 moderns against the base model's 6/6 and 1/22 under
+the same protocol (paired site-level McNemar p = 0.011); on the SC set it
+keeps 9/10 rings but rejects 0/10 decoys.
+
+## B.3 — Controls, factorial, mechanism, and deployment tests
+
+Every additional arm reported in Appendix B.3 has a released config or script
+and a released coordinate-free output:
+
+```bash
+# Control and factorial fine-tunes (train each with LLaMA-Factory, then evaluate):
+#   config/training/v10_control_replay.yaml    replay only     -> eskew_ctrl.csv
+#   config/training/v10_factorial_neg.yaml     negatives only  -> eskew_factorial_neg.csv
+#   config/training/v10_factorial_pos.yaml     positives only  -> eskew_factorial_pos.csv
+
+# Mechanism tests (served fine-tune required):
+VLM_MODEL=terrallm-v10 python scripts/vlm_eval_v10_occlusion.py --set eskew --out data/v10_eval/eskew_v10_occluded.csv
+VLM_MODEL=terrallm-v10 python scripts/vlm_eval_v10_variants.py --mode detailmask --out data/v10_eval/eskew_v10_detailmask.csv
+VLM_MODEL=terrallm-v10 python scripts/vlm_eval_v10_variants.py --mode ctxquiet  --out data/v10_eval/eskew_v10_ctxquiet.csv
+VLM_MODEL=terrallm-v10 python scripts/vlm_eval_v10_variants.py --mode ctxbusy   --out data/v10_eval/eskew_v10_ctxbusy.csv
+
+# Deployment tests over candidate streams (survivor ranking; agricultural-island collision):
+python scripts/vlm_eval_v10_stream.py --csv <survivors.csv> --id-col id --lat-col lat --lon-col lon --out data/v10_eval/jaketown_survivors_v10.csv
+
+# Table 1 decoy control and relief-stratified recall (restricted corrected centers):
+export EARTHWORK_GOLD_LIST=/path/to/located_mounds_corrected.csv
+python scripts/yazoo_decoy_control.py     # 2-20% floor across tolerances -> data/refind_utm/
+python scripts/mound_relief_strata.py     # recall by relief class        -> data/refind_utm/
+```
+
+Headline outcomes, all reproducible from the released CSVs: negatives-only
+teaches refusal (22/22 rejected, 0/6 mounds kept), positives-only nearly
+reproduces the full behavior (6/21 at 5/6), verdicts follow the transplanted
+context view in both directions, survivor ranking fails to enrich the desk
+review's plausibles (AUC 0.43), and the fine-tune rejects 26 of the 54
+agricultural-island keeps.
 
 ## The vision-language layer (optional)
 

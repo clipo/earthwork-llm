@@ -17,9 +17,8 @@ import sys, argparse, time
 import pandas as pd
 from pyproj import Transformer
 
-sys.path.insert(0, "/home/clipo/projects/terrallm")
-sys.path.insert(0, "/home/clipo/projects/terrallm/scripts")
-sys.path.insert(0, "/home/clipo/projects/earthwork-llm/src")
+sys.path.insert(0, "scripts")
+sys.path.insert(0, "src")
 import vlm_eval_v10 as base
 
 TF = Transformer.from_crs("EPSG:4326", "EPSG:26915", always_xy=True)

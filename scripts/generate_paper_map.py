@@ -41,9 +41,7 @@ CENTER_LABEL = {
     "Haynes Bluff": (0.06, -0.04, "left"),
 }
 
-GOLD_CSV = os.environ.get(
-    "EARTHWORK_GOLD_LIST",
-    "/home/clipo/projects/yazoo/data/reference/located_mounds.csv")
+GOLD_CSV = os.environ["EARTHWORK_GOLD_LIST"]  # restricted (DATA_POLICY.md)
 # Fallback: reconstruct the gold coordinates from the validation summary.
 GOLD_FALLBACK = "data/gold_validation_full/validation_summary.csv"
 
@@ -54,9 +52,7 @@ EXTENT = [-91.7, -89.65, 32.25, 34.95]
 
 # Eskew (2008) ground-survey set: field-verified mounds and modern earthworks
 # used as the Section 3.6 discrimination test. Coordinates from the seed list.
-SEED_CSV = os.environ.get(
-    "EARTHWORK_ABLATION_SET",
-    "/home/clipo/projects/yazoo/data/reference/mounds_seed.csv")
+SEED_CSV = os.environ["EARTHWORK_ABLATION_SET"]  # restricted (DATA_POLICY.md)
 
 
 def load_gold():
