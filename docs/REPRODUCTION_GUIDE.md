@@ -188,3 +188,11 @@ discrimination drills (V10) it recovers a partial, non-transferring age signal.
 Table 1 (recall) is computed in UTM Zone 15N (EPSG:26915) so distances are true
 meters. The regional scanner runs in Web Mercator (EPSG:3857); at ~33° N its
 distances are ~19% and areas ~42% larger than true ground (see manuscript §2.1).
+
+## Notes on evaluation CSVs
+
+The released model-evaluation CSVs (`data/v10_eval/`) encode verdicts as
+`MOUND` / `NOT_MOUND` (underscore) with ties as an empty verdict string; the
+manuscript prints "NOT-MOUND" typographically. Scripts keyed to the manuscript
+string will silently zero the rejection counts. Bootstrap confidence intervals
+in B.3 use numpy's default_rng with seed 0.
