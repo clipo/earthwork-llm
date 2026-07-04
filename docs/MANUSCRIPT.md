@@ -22,7 +22,7 @@ The Yazoo Basin of northwestern Mississippi, the Delta, holds one of the densest
 
 Since the early twentieth century, the Delta has been transformed. Mechanized agriculture has leveled low relief across most of the basin, and flood-control works have reshaped the rest. Dredging produced thousands of kilometers of canals flanked by spoil banks that, once eroded and vegetated, resemble ancient embankments, while levees, roadbeds, and industrial pads add to a signature of modern activity that any high-resolution terrain method must confront (Tarolli and Sofia 2016).
 
-The combination makes the Delta a hard setting for automated detection. A human analyst scanning hillshade tiles faces fatigue and a pull toward large, obvious structures, while an automated approach sensitive enough to catch a 0.3 m rise will flag every spoil bank in its path. That sensitivity is costly, paid in wasted ground-truthing.
+The combination makes the Delta a hard setting for automated detection. A human analyst scanning hillshade tiles faces fatigue and a pull toward large, obvious structures, while an automated approach sensitive enough to catch a 0.3 m rise will flag every spoil bank in its path. That sensitivity is costly, paid in wasted ground-truthing. The Delta is our primary test of this problem, and the shell rings of coastal South Carolina provide a second, contrasting one (Section 1.3), asking whether a solution built without local labels carries to a different feature class and region.
 
 ### 1.2 The label-free approach and what this paper adds
 
