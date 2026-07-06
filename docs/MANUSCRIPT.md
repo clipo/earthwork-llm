@@ -63,7 +63,7 @@ For each cell, the method casts lines of sight in eight directions and asks whet
 
 Our implementation differs from that canonical form in two respects. Every detection in Section 3 comes from a **single-scale** classifier with a five-cell search radius (5 m on the 1 m DEM) whose flatness tolerance is an **elevation difference of 0.3 m** rather than an angle. A multi-scale, persistence-scored form exists in the same engine but generates only training data for the vision-language model (Appendix B.5). The 0.3 m tolerance sets a floor on the relief the detector registers, a limitation for sub-0.5 m mounds that we return to in Section 5.
 
-![**Figure 4. Geomorphons.**](figures/fig_geomorphon_concepts.png)
+![**Figure 4. Geomorphons.** (A) For each cell, eight lines of sight are classified as rising (+), falling (−), or level (0) using a flatness threshold (1.0 degree in the canonical angular method illustrated here, while the evaluated detector substitutes a 0.3 m elevation-difference tolerance, Section 2.2). (B) The eight ternary values form a code, and a cell that looks down in all directions resolves to PEAK. (C) Six diagnostic landforms and their archaeological analogs. Classification depends on local morphology, not absolute elevation, which is why the method finds subtle mounds on a flat plain.](figures/fig_geomorphon_concepts.png)
 
 In this framing, a conical burial mound resolves into a compact Peak, a platform mound into a flat-topped Peak, a levee into a linear Ridge, and a ditch or canal into a linear Valley. The classifier is generic, and the archaeological interpretation is imposed afterward.
 
