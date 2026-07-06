@@ -1,9 +1,9 @@
 # EarthworkLLM — label-free LiDAR screening for earthen mounds
 
-Reproducibility code for *"Toward Label-Free Archaeological Prospection:
-Training-Free Detection and Zero-Shot Interpretation of Pre-European Earthworks
-from Public LiDAR in the Yazoo Basin and Coastal South Carolina"* (Lipo, Davis,
-and DiNapoli; submitted to *Archaeological Prospection*). The manuscript is in
+Reproducibility code for *"Toward Zero-Shot Archaeological Prospection:
+Training-Free Detection of Pre-European Earthworks from Public LiDAR in the
+American Southeast"* (Lipo, Davis, and DiNapoli; submitted to *Archaeological
+Prospection*). The manuscript is in
 [`docs/MANUSCRIPT.md`](docs/MANUSCRIPT.md).
 
 The workflow screens public bare-earth LiDAR for compact mound-like features
