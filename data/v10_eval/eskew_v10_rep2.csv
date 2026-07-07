@@ -1,0 +1,29 @@
+name,label,pred,verdict,votes_mound,votes_not
+Glover Place,1,1.0,MOUND,5,0
+Gates,1,1.0,MOUND,3,2
+I.C. Village,1,0.0,NOT_MOUND,1,4
+Lula,1,1.0,MOUND,5,0
+Eskew Ground-Survey 01,0,0.0,NOT_MOUND,0,5
+Eskew Ground-Survey 02,0,0.0,NOT_MOUND,2,3
+Eskew Ground-Survey 03,0,1.0,MOUND,4,1
+Eskew Ground-Survey 04,0,0.0,NOT_MOUND,2,3
+Eskew Ground-Survey 05,0,0.0,NOT_MOUND,0,5
+Eskew Ground-Survey 06,0,0.0,NOT_MOUND,1,4
+Eskew Ground-Survey 07,0,,,2,2
+Eskew Ground-Survey 08,0,0.0,NOT_MOUND,2,3
+Eskew Ground-Survey 09,0,1.0,MOUND,5,0
+Eskew Ground-Survey 10,0,1.0,MOUND,3,2
+Eskew Ground-Survey 11,0,0.0,NOT_MOUND,2,3
+Eskew Ground-Survey 12,0,0.0,NOT_MOUND,1,4
+Eskew Ground-Survey 13,0,1.0,MOUND,4,1
+Eskew Ground-Survey 15,0,0.0,NOT_MOUND,1,4
+Eskew Ground-Survey 16,0,1.0,MOUND,4,1
+Eskew Ground-Survey 18,0,1.0,MOUND,5,0
+Eskew Ground-Survey 19,0,0.0,NOT_MOUND,1,4
+Eskew Ground-Survey 20,0,1.0,MOUND,4,1
+Eskew Ground-Survey 21,0,1.0,MOUND,4,1
+Eskew Ground-Survey 22,0,1.0,MOUND,5,0
+Eskew Ground-Survey 23,0,1.0,MOUND,5,0
+Eskew Ground-Survey 25,0,1.0,MOUND,5,0
+Lake George Mound A,1,1.0,MOUND,5,0
+Winterville Mound A,1,1.0,MOUND,5,0

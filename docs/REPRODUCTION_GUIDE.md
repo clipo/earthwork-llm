@@ -197,14 +197,20 @@ python scripts/vlm_eval_v10_stream.py --csv <survivors.csv> --id-col id --lat-co
 export EARTHWORK_GOLD_LIST=/path/to/located_mounds_corrected.csv
 python scripts/yazoo_decoy_control.py     # 2-20% floor across tolerances -> data/refind_utm/
 python scripts/mound_relief_strata.py     # recall by relief class        -> data/refind_utm/
+
+# Model-only locator arm (Section 3.1, Appendix B.1): the served model pointing
+# at mound candidates in a two-panel geomorphon window, frozen Table 1 scoring:
+VLM_MODEL=terrallm-v91 python scripts/vlm_detection_arm.py --set mounds --out data/v10_eval/vlm_detect_mounds.csv
+VLM_MODEL=terrallm-v91 python scripts/vlm_detection_arm.py --set decoys --out data/v10_eval/vlm_detect_decoys.csv
 ```
 
 Headline outcomes, all reproducible from the released CSVs: negatives-only
 teaches refusal (22/22 rejected, 0/6 mounds kept), positives-only nearly
 reproduces the full behavior (6/21 at 5/6), verdicts follow the transplanted
 context view in both directions, survivor ranking fails to enrich the desk
-review's plausibles (AUC 0.43), and the fine-tune rejects 26 of the 54
-agricultural-island keeps.
+review's plausibles (AUC 0.43), the fine-tune rejects 26 of the 54
+agricultural-island keeps, and the model-only locator arm performs at its decoy
+floor (24% at 30 m against 16%, exact binomial p = 0.18).
 
 ## The vision-language layer (optional)
 

@@ -1,0 +1,29 @@
+site,label,nearest_modern_m,feature,verdict_full,verdict_prior
+Glover Place,1,,,KEEP,KEEP
+Gates,1,,,KEEP,KEEP
+I.C. Village,1,,,FLAG,FLAG
+Lula,1,,,KEEP,KEEP
+Eskew Ground-Survey 01,0,23.1,road,REJECT,REJECT
+Eskew Ground-Survey 02,0,155.5,road,KEEP,KEEP
+Eskew Ground-Survey 03,0,41.3,road,FLAG,KEEP
+Eskew Ground-Survey 04,0,116.9,road,KEEP,KEEP
+Eskew Ground-Survey 05,0,224.9,road,FLAG,FLAG
+Eskew Ground-Survey 06,0,100.1,drain,KEEP,KEEP
+Eskew Ground-Survey 07,0,,,KEEP,KEEP
+Eskew Ground-Survey 08,0,164.1,road,KEEP,KEEP
+Eskew Ground-Survey 09,0,126.4,road,REJECT,REJECT
+Eskew Ground-Survey 10,0,40.5,drain,FLAG,KEEP
+Eskew Ground-Survey 11,0,25.9,rail,FLAG,FLAG
+Eskew Ground-Survey 12,0,210.5,embankment,KEEP,KEEP
+Eskew Ground-Survey 13,0,186.4,drain,KEEP,KEEP
+Eskew Ground-Survey 15,0,68.0,road,KEEP,KEEP
+Eskew Ground-Survey 16,0,72.0,drain,KEEP,KEEP
+Eskew Ground-Survey 18,0,23.8,road,REJECT,FLAG
+Eskew Ground-Survey 19,0,284.3,road,FLAG,FLAG
+Eskew Ground-Survey 20,0,244.0,road,KEEP,KEEP
+Eskew Ground-Survey 21,0,,,KEEP,KEEP
+Eskew Ground-Survey 22,0,259.8,road,KEEP,KEEP
+Eskew Ground-Survey 23,0,205.5,road,KEEP,KEEP
+Eskew Ground-Survey 25,0,137.9,road,FLAG,FLAG
+Lake George Mound A,1,,,KEEP,KEEP
+Winterville Mound A,1,85.8,road,KEEP,KEEP

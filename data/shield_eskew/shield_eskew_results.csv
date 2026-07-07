@@ -1,0 +1,29 @@
+site,label,aspect,nlcd,verdict
+Glover Place,1,,Cultivated Crops,KEEP
+Gates,1,1.41,Woody Wetlands,KEEP
+I.C. Village,1,2.9,Cultivated Crops,FLAG
+Lula,1,,Cultivated Crops,KEEP
+Eskew Ground-Survey 01,0,1.4,"Developed, Low Intensity",REJECT
+Eskew Ground-Survey 02,0,1.19,Woody Wetlands,KEEP
+Eskew Ground-Survey 03,0,2.0,Cultivated Crops,KEEP
+Eskew Ground-Survey 04,0,1.22,Cultivated Crops,KEEP
+Eskew Ground-Survey 05,0,3.4,Barren Land (Rock/Sand/Clay),FLAG
+Eskew Ground-Survey 06,0,1.11,Woody Wetlands,KEEP
+Eskew Ground-Survey 07,0,1.17,Cultivated Crops,KEEP
+Eskew Ground-Survey 08,0,1.04,Woody Wetlands,KEEP
+Eskew Ground-Survey 09,0,1.52,Open Water,REJECT
+Eskew Ground-Survey 10,0,1.17,Cultivated Crops,KEEP
+Eskew Ground-Survey 11,0,3.33,Woody Wetlands,FLAG
+Eskew Ground-Survey 12,0,1.58,Woody Wetlands,KEEP
+Eskew Ground-Survey 13,0,1.51,Woody Wetlands,KEEP
+Eskew Ground-Survey 15,0,1.28,Woody Wetlands,KEEP
+Eskew Ground-Survey 16,0,1.16,Emergent Herbaceous Wetlands,KEEP
+Eskew Ground-Survey 18,0,3.71,Cultivated Crops,FLAG
+Eskew Ground-Survey 19,0,2.58,Cultivated Crops,FLAG
+Eskew Ground-Survey 20,0,1.04,Woody Wetlands,KEEP
+Eskew Ground-Survey 21,0,2.0,Woody Wetlands,KEEP
+Eskew Ground-Survey 22,0,1.23,Cultivated Crops,KEEP
+Eskew Ground-Survey 23,0,,Cultivated Crops,KEEP
+Eskew Ground-Survey 25,0,2.6,Cultivated Crops,FLAG
+Lake George Mound A,1,2.33,Woody Wetlands,KEEP
+Winterville Mound A,1,1.79,Cultivated Crops,KEEP

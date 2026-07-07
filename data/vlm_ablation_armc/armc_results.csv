@@ -1,0 +1,29 @@
+site_id,name,kind,label,pred,verdict,votes_mound,votes_notmound,runs
+ESK-024,Glover Place,confirmed_mound,1,1,MOUND,6,2,9
+ESK-026,Gates,confirmed_mound,1,1,MOUND,6,3,9
+ESK-027,I.C. Village,confirmed_mound,1,1,MOUND,5,4,9
+ESK-029,Lula,confirmed_mound,1,1,MOUND,7,2,9
+ESK-001,Eskew Ground-Survey 01,modern_earthwork,0,1,MOUND,9,0,9
+ESK-002,Eskew Ground-Survey 02,modern_earthwork,0,1,MOUND,8,0,9
+ESK-003,Eskew Ground-Survey 03,modern_earthwork,0,1,MOUND,7,2,9
+ESK-004,Eskew Ground-Survey 04,modern_earthwork,0,1,MOUND,7,1,9
+ESK-005,Eskew Ground-Survey 05,modern_earthwork,0,1,MOUND,8,1,9
+ESK-006,Eskew Ground-Survey 06,modern_earthwork,0,1,MOUND,7,2,9
+ESK-007,Eskew Ground-Survey 07,modern_earthwork,0,1,MOUND,6,3,9
+ESK-008,Eskew Ground-Survey 08,modern_earthwork,0,1,MOUND,6,3,9
+ESK-009,Eskew Ground-Survey 09,modern_earthwork,0,1,MOUND,8,0,9
+ESK-010,Eskew Ground-Survey 10,modern_earthwork,0,1,MOUND,7,2,9
+ESK-011,Eskew Ground-Survey 11,modern_earthwork,0,1,MOUND,8,0,9
+ESK-012,Eskew Ground-Survey 12,modern_earthwork,0,1,MOUND,6,3,9
+ESK-013,Eskew Ground-Survey 13,modern_earthwork,0,1,MOUND,7,2,9
+ESK-015,Eskew Ground-Survey 15,modern_earthwork,0,1,MOUND,7,2,9
+ESK-016,Eskew Ground-Survey 16,modern_earthwork,0,1,MOUND,5,3,9
+ESK-018,Eskew Ground-Survey 18,modern_earthwork,0,1,MOUND,9,0,9
+ESK-019,Eskew Ground-Survey 19,modern_earthwork,0,1,MOUND,5,3,9
+ESK-020,Eskew Ground-Survey 20,modern_earthwork,0,1,MOUND,7,2,9
+ESK-021,Eskew Ground-Survey 21,modern_earthwork,0,1,MOUND,9,0,9
+ESK-022,Eskew Ground-Survey 22,modern_earthwork,0,1,MOUND,7,2,9
+ESK-023,Eskew Ground-Survey 23,modern_earthwork,0,1,MOUND,7,1,9
+ESK-025,Eskew Ground-Survey 25,modern_earthwork,0,1,MOUND,9,0,9
+LG-A,Lake George Mound A,confirmed_mound,1,1,MOUND,7,2,9
+WV-A,Winterville Mound A,confirmed_mound,1,1,MOUND,7,0,9
