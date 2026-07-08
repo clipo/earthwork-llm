@@ -22,7 +22,10 @@ ImageServer with no API key, no local data, and no labeled mounds:
 python -m venv .venv && source .venv/bin/activate
 pip install -e .                 # installs the earthwork_llm package + requirements
 
-# Regional scan of a public site (geomorphon detector + shield), e.g. Jaketown:
+# Regional scan of a public site (geomorphon detector + shield), e.g. Jaketown.
+# Output includes the two-score triage columns of manuscript Sections 3.8 and 4:
+# score_a (artificial vs natural, relief + compactness) and score_b (modern
+# association from land cover and mapped-feature distances), with ranks:
 python scripts/regional_earthwork_scanner.py \
   --bbox=-90.4949,33.1752,-90.4746,33.1955 \
   --out-dir data/scan_jaketown --tile-size-m 500 --overlap-m 50 --api-url="" --keep-rejected

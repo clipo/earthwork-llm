@@ -16,6 +16,7 @@ Usage:
 import argparse
 import logging
 import json
+import math
 import os
 import pandas as pd
 import numpy as np
@@ -30,6 +31,13 @@ from earthwork_llm.surface.false_positive_shield import (
     Decision,
     nearest_noise_feature,
 )
+from earthwork_llm.surface.triage import (
+    scan_stats,
+    score_a,
+    score_b,
+    rank_descending,
+)
+import context_sheet as cs
 from earthwork_query import detect_earthworks, query_earthwork_v8
 from demo_terrain_query import (
     load_dem_geotiff,
@@ -85,6 +93,53 @@ def generate_tiles(bbox_wgs84: Tuple[float, float, float, float], tile_size_m: f
             
     return tiles
 
+# ---------------------------------------------------------------------------
+# Fast per-survivor context distances for Score B (Sections 3.8, 4; App. B.6).
+# One FEMA USA Structures query + one NHD canal query per surviving candidate
+# (never per raw candidate), reusing scripts/context_sheet.py endpoints.
+# Convention (see earthwork_llm.surface.triage): None = service unavailable
+# (Score B flagged incomplete); math.inf = queried, nothing within radius.
+# ---------------------------------------------------------------------------
+
+_dist_cache: Dict[Tuple[str, float, float], Optional[float]] = {}
+
+def _structure_distance_m(x_utm: float, y_utm: float) -> Optional[float]:
+    """Distance (m) to the nearest FEMA USA Structures footprint."""
+    key = ("fema", round(x_utm, -1), round(y_utm, -1))
+    if key in _dist_cache:
+        return _dist_cache[key]
+    feats = cs._arcgis_envelope_query(cs.USA_STRUCTURES, x_utm, y_utm,
+                                      out_fields="OBJECTID")
+    if feats is None:
+        result = None
+    else:
+        result = math.inf
+        for f in feats:
+            rings = f.get("geometry", {}).get("rings", [])
+            if any(cs._inside_ring(x_utm, y_utm, ring) for ring in rings):
+                result = 0.0
+                break
+            d, _, _ = cs._nearest_on_paths(x_utm, y_utm, rings)
+            if d is not None and d < result:
+                result = d
+    _dist_cache[key] = result
+    return result
+
+def _canal_distance_m(x_utm: float, y_utm: float) -> Optional[float]:
+    """Distance (m) to the nearest NHD canal/ditch flowline."""
+    key = ("nhd", round(x_utm, -1), round(y_utm, -1))
+    if key in _dist_cache:
+        return _dist_cache[key]
+    best, _name = cs._nearest_flowline(x_utm, y_utm, cs.FCODE_CANAL)
+    if best is None:
+        result = None
+    elif best[0] is None:
+        result = math.inf
+    else:
+        result = best[0]
+    _dist_cache[key] = result
+    return result
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--bbox", required=True, help="Bounding box in WGS84: min_lon,min_lat,max_lon,max_lat")
@@ -99,6 +154,9 @@ def main():
     parser.add_argument("--llm-prob-threshold", type=float, default=0.7, help="Only run LLM if deterministic detector finds candidates with probability > X")
     parser.add_argument("--no-nlcd", action="store_true", help="Disable NLCD land-cover screening")
     parser.add_argument("--keep-rejected", action="store_true", help="Write shield-rejected candidates to output (flagged) instead of dropping them")
+    parser.add_argument("--no-triage-queries", action="store_true",
+                        help="Skip the per-survivor FEMA/NHD distance queries for Score B "
+                             "(Score B is then computed from the shield context alone and flagged incomplete)")
     args = parser.parse_args()
 
     # Parse bbox
@@ -131,6 +189,9 @@ def main():
     shield = FalsePositiveShield(enclosure_query=False)
 
     all_detections = []
+    det_cands = []        # detector candidate dict for each row in all_detections
+    scan_population = []  # every screened candidate: Score A is z-scored against these
+    transformer_to_utm = Transformer.from_crs("EPSG:4326", "EPSG:26915", always_xy=True)
     shield_stats = {"kept": 0, "flagged": 0, "rejected": 0, "context_incomplete": 0}
     
     for tile in tiles:
@@ -187,7 +248,8 @@ def main():
                 nearest_noise_m=nearest_m,
                 nearest_noise_label=nearest_label,
             )
-            screened.append((cand, lon, lat, nlcd_name, nearest_label, nearest_m, verdict))
+            screened.append((cand, lon, lat, nlcd_name, nearest_label, nearest_m, verdict, nlcd_val))
+            scan_population.append(cand)
 
             shield_stats["rejected" if verdict.decision == Decision.REJECT
                          else "flagged" if verdict.decision == Decision.FLAG
@@ -212,9 +274,29 @@ def main():
                 log.warning(f"LLM query failed for {tile_id}: {e}")
 
         # 6. Store detections (survivors, plus rejected ones if --keep-rejected)
-        for cand, lon, lat, nlcd_name, nearest_label, nearest_m, verdict in screened:
+        for cand, lon, lat, nlcd_name, nearest_label, nearest_m, verdict, nlcd_val in screened:
             if verdict.decision == Decision.REJECT and not args.keep_rejected:
                 continue
+
+            # Two-score triage (manuscript Sections 3.8, 4; Appendix B.6).
+            # Score B here; Score A needs scan-wide statistics and is filled
+            # in after all tiles are processed. The FEMA/NHD distance queries
+            # run once per SURVIVING candidate only (never per raw candidate)
+            # to keep the scan fast; rejected rows kept via --keep-rejected
+            # get a partial Score B flagged incomplete.
+            structure_m = canal_m = None
+            if verdict.decision != Decision.REJECT and not args.no_triage_queries:
+                x_utm, y_utm = transformer_to_utm.transform(lon, lat)
+                structure_m = _structure_distance_m(x_utm, y_utm)
+                canal_m = _canal_distance_m(x_utm, y_utm)
+            sb = score_b(cand, {
+                "nlcd_value": nlcd_val,
+                "noise_map_available": noise_gdf is not None,
+                "nearest_noise_m": nearest_m,
+                "structure_m": structure_m,
+                "canal_m": canal_m,
+            })
+
             det = {
                 "tile_id": tile_id,
                 "latitude": lat,
@@ -231,8 +313,13 @@ def main():
                 "shield_reasons": "; ".join(verdict.reasons) if verdict.reasons else "none",
                 "justification": cand['justification'],
                 "llm_analysis": analysis if verdict.decision != Decision.REJECT else "N/A",
+                # Two-score triage columns (additive; Sections 3.8, 4, B.6).
+                "score_a": None,  # z-scored within the scan, filled post-loop
+                "score_b": sb.score,
+                "score_b_complete": sb.complete,
             }
             all_detections.append(det)
+            det_cands.append(cand)
 
         # 7. Save a discovery visual when a surviving candidate is strong.
         if survivors and max_p >= args.llm_prob_threshold:
@@ -241,6 +328,18 @@ def main():
 
     # Save final detections
     if all_detections:
+        # Score A is z-scored within the scan, so it can only be computed once
+        # every tile has been screened (Sections 3.8, 4; Appendix B.6).
+        stats = scan_stats(scan_population)
+        for det, cand in zip(all_detections, det_cands):
+            det["score_a"] = score_a(cand, stats)
+        for det, r in zip(all_detections,
+                          rank_descending([d["score_a"] for d in all_detections])):
+            det["rank_a"] = r
+        for det, r in zip(all_detections,
+                          rank_descending([d["score_b"] for d in all_detections])):
+            det["rank_b"] = r
+
         df = pd.DataFrame(all_detections)
         report_path = out_dir / "regional_detections.csv"
         df.to_csv(report_path, index=False)
