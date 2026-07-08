@@ -7,8 +7,7 @@ import numpy as np, pandas as pd
 import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
 
 sys.path.insert(0, "."); sys.path.insert(0, "scripts")
-from yazoo.labeling.dem_usgs3dep import Usgs3depImageServerSource
-from yazoo.labeling.dem_sources import WindowRequest
+from earthwork_llm.ingestion.imageserver import Usgs3depImageServerSource, WindowRequest
 from demo_terrain_query import classify_geomorphon_simple, make_hillshade
 from scripts.earthwork_query import detect_earthworks
 

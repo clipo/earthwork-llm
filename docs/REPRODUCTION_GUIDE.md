@@ -215,7 +215,20 @@ VLM_MODEL=$BASE python scripts/vlm_salience_arm.py --set jaketown --rubric v2 --
 # Per-candidate land-use context sheets (Appendix B.6; public keyless services:
 # Annual NLCD 1985-2025, FEMA USA Structures, NHD hydrography, OSM roads):
 python scripts/context_sheet.py --csv points.csv --out sheets.jsonl
+
+# Figure 13 (Section 3.8) regenerates from the released salience CSVs; panel (b)
+# additionally needs the desk-review file via JAKETOWN_VERDICTS (not distributed):
+python scripts/generate_fig_salience.py
+
+# Ditch/enclosure closure-scoring prototype (Appendix C work program), with
+# published-coordinate presets for Spanish Fort (GNIS 694850) and the Marksville
+# NHL (NRIS 66000372):
+python scripts/ditch_enclosure_query.py --site spanish_fort --mode ditch --decoys
+python scripts/ditch_enclosure_query.py --site marksville --mode embankment --decoys
 ```
+
+Figure-generation extras: `generate_paper_map.py` (Figure 1) additionally needs
+`cartopy`, which is not in the core requirements.
 
 Headline outcomes, all reproducible from the released CSVs: negatives-only
 teaches refusal (22/22 rejected, 0/6 mounds kept), positives-only nearly

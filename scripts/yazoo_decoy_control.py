@@ -17,7 +17,7 @@ import numpy as np, pandas as pd
 sys.path.insert(0, "scripts")
 sys.path.insert(0, "src")
 from demo_terrain_query import classify_geomorphon_simple
-from scripts.earthwork_query import detect_earthworks
+from earthwork_query import detect_earthworks
 from earthwork_llm.ingestion.imageserver import fetch_dem
 
 GOLD = os.environ["EARTHWORK_GOLD_LIST"]  # restricted corrected centers (DATA_POLICY.md)
