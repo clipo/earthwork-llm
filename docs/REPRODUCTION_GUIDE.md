@@ -202,6 +202,19 @@ python scripts/mound_relief_strata.py     # recall by relief class        -> dat
 # at mound candidates in a two-panel geomorphon window, frozen Table 1 scoring:
 VLM_MODEL=terrallm-v91 python scripts/vlm_detection_arm.py --set mounds --out data/v10_eval/vlm_detect_mounds.csv
 VLM_MODEL=terrallm-v91 python scripts/vlm_detection_arm.py --set decoys --out data/v10_eval/vlm_detect_decoys.csv
+
+# Structured reading, window sweep, and fused ranking (Section 3.8, Appendix B.6).
+# The anomaly rubric (v2) on the untuned base model; JAKETOWN_VERDICTS points at a
+# desk-review CSV (id, utm_x, utm_y, verdict) not distributed here:
+BASE=Qwen/Qwen3-VL-30B-A3B-Thinking
+VLM_MODEL=$BASE python scripts/vlm_salience_arm.py --set eskew    --rubric v2 --out data/v10_eval/salience_v2_eskew_base.csv
+VLM_MODEL=$BASE python scripts/vlm_salience_arm.py --set jaketown --rubric v2 --context-m 150 --out data/v10_eval/salience_v2_jaketown_ctx150.csv
+# ... repeat --context-m over 150/300/600/1200/2400 for the sweep; released outputs
+# cover all windows plus the v1 rubric and fine-tune arms (data/v10_eval/salience_*.csv).
+
+# Per-candidate land-use context sheets (Appendix B.6; public keyless services:
+# Annual NLCD 1985-2025, FEMA USA Structures, NHD hydrography, OSM roads):
+python scripts/context_sheet.py --csv points.csv --out sheets.jsonl
 ```
 
 Headline outcomes, all reproducible from the released CSVs: negatives-only
@@ -209,8 +222,10 @@ teaches refusal (22/22 rejected, 0/6 mounds kept), positives-only nearly
 reproduces the full behavior (6/21 at 5/6), verdicts follow the transplanted
 context view in both directions, survivor ranking fails to enrich the desk
 review's plausibles (AUC 0.43), the fine-tune rejects 26 of the 54
-agricultural-island keeps, and the model-only locator arm performs at its decoy
-floor (24% at 30 m against 16%, exact binomial p = 0.18).
+agricultural-island keeps, the model-only locator arm performs at its decoy
+floor (24% at 30 m against 16%, exact binomial p = 0.18), and the structured
+reading of Section 3.8 peaks at the 150 m window, where the isolation axis
+(AUC 0.69) fuses with computed relief (0.72) into a 0.79 triage ranking.
 
 ## The vision-language layer (optional)
 
