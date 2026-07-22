@@ -263,3 +263,25 @@ The released model-evaluation CSVs (`data/v10_eval/`) encode verdicts as
 manuscript prints "NOT-MOUND" typographically. Scripts keyed to the manuscript
 string will silently zero the rejection counts. Bootstrap confidence intervals
 in B.3 use numpy's default_rng with seed 0.
+
+## Figure map
+
+Every manuscript figure, its generator, and what it needs. "Public" figures
+regenerate from the 3DEP ImageServer and released data alone; regenerated
+copies are equivalent to (not pixel-identical with) the shipped PNGs.
+
+| Figure | Generator | Needs |
+|---|---|---|
+| 1 (study areas) | `generate_paper_map.py` | public + `cartopy`; shell-ring list via `SHELL_RING_GOLD` |
+| 2 (zero-shot concept) | `generate_zero_shot_fig.py` | public (diagram) |
+| 3 (workflow) | `generate_workflow_fig.py` | public (diagram) |
+| 4, 5 (geomorphons, shield) | `generate_explanatory_figures.py` | public |
+| 6 (recall panels) | `gen_fig6_utm.py` | restricted reference set (`EARTHWORK_GOLD_LIST`) |
+| 7 (Jaketown shield) | `generate_jaketown_shield_fig.py` | public |
+| 8 (Lake George negative) | `generate_lake_george_fig.py` | public |
+| 9 (Winterville control) | `generate_winterville_fig.py` | public |
+| 10 (agricultural island) | shipped PNG only | scan over a tract containing a restricted reference mound; not regenerable from public inputs |
+| 11 (discrimination) | `generate_discrimination_fig.py` | released ablation CSVs |
+| 12 (shell rings) | `generate_shell_ring_fig.py` | shell-ring list via `SHELL_RING_GOLD` |
+| 13 (salience ranking) | `generate_fig_salience.py` | released salience CSVs; panel (b) also `JAKETOWN_VERDICTS` |
+| A1 (multi-view ensemble) | `generate_multiview_fig.py` | public |
