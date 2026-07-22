@@ -9,7 +9,9 @@ Reads: data/v10_eval/salience_v2_jaketown_{base,ctx*}.csv and the Jaketown
 review verdicts (relief + labels). Writes docs/figures/fig_salience_ranking.png.
 """
 from __future__ import annotations
-import csv, random, statistics
+import csv
+import random
+import statistics
 from pathlib import Path
 import matplotlib
 matplotlib.use("Agg")
@@ -30,8 +32,8 @@ def load(path):
 
 
 def auc(pairs, key):
-    pos = [d[key] for _, l, d in pairs if l == 1 and d[key] is not None]
-    neg = [d[key] for _, l, d in pairs if l == 0 and d[key] is not None]
+    pos = [d[key] for _, lab, d in pairs if lab == 1 and d[key] is not None]
+    neg = [d[key] for _, lab, d in pairs if lab == 0 and d[key] is not None]
     if not pos or not neg:
         return None
     return sum((1.0 if p > n else 0.5 if p == n else 0) for p in pos for n in neg) / (len(pos) * len(neg))
@@ -60,8 +62,11 @@ def main():
         for w, tag in WINDOWS:
             pairs = load(ROOT / f"data/v10_eval/salience_v2_jaketown_{tag}.csv")
             a = auc(pairs, key)
-            l, h = boot_ci(pairs, key)
-            xs.append(w); ys.append(a); lo.append(a - l); hi.append(h - a)
+            ci_lo, h = boot_ci(pairs, key)
+            xs.append(w)
+            ys.append(a)
+            lo.append(a - ci_lo)
+            hi.append(h - a)
         ax1.errorbar(xs, ys, yerr=[lo, hi], color=color, marker=marker, ls=ls, lw=2,
                      ms=7, capsize=3, elinewidth=1, ecolor=color, alpha=0.95, label=key)
         ax1.annotate(key, (xs[0], ys[0]), textcoords="offset points",
@@ -90,10 +95,10 @@ def main():
     # legibility (disclosed in the caption); relief (x) is plotted as measured
     jit = [random.uniform(-0.07, 0.07) for _ in zi]
     zi_j = [a + b for a, b in zip(zi, jit)]
-    rej_x = [a for a, l in zip(zr, labels) if l == 0]
-    rej_y = [a for a, l in zip(zi_j, labels) if l == 0]
-    pla_x = [a for a, l in zip(zr, labels) if l == 1]
-    pla_y = [a for a, l in zip(zi_j, labels) if l == 1]
+    rej_x = [a for a, lab in zip(zr, labels) if lab == 0]
+    rej_y = [a for a, lab in zip(zi_j, labels) if lab == 0]
+    pla_x = [a for a, lab in zip(zr, labels) if lab == 1]
+    pla_y = [a for a, lab in zip(zi_j, labels) if lab == 1]
     ax2.scatter(rej_x, rej_y, s=26, facecolors="none", edgecolors=GRAY, lw=1.1,
                 alpha=0.75, label="rejected (n=72)")
     ax2.scatter(pla_x, pla_y, s=75, marker="^", color=BLUE, edgecolors="white",

@@ -13,22 +13,16 @@ Usage:
 """
 
 import argparse
-import base64
-import json
 import logging
-import re
-import sys
-from io import BytesIO
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import List, Optional
 
 import matplotlib
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt
 import numpy as np
+from pyproj import Transformer
 import requests
 from PIL import Image
-from scipy.ndimage import gaussian_filter
 
 # Import demo components (reusing loading/rasterization logic)
 from demo_terrain_query import (
@@ -37,7 +31,6 @@ from demo_terrain_query import (
     load_dem_geotiff, 
     make_hillshade, 
     classify_geomorphon_simple,
-    make_composite_panel,
     make_multi_view_panel,
     pil_to_b64_data_uri,
     strip_thinking,
@@ -112,7 +105,8 @@ def detect_earthworks(geo: np.ndarray, dem: np.ndarray, query: str,
         # Linearity Check (Eccentricity/Aspect Ratio)
         # Ancient mounds are generally circular or rectangular, not extremely long/thin
         rows, cols = np.where(comp_mask)
-        if len(rows) < 5: continue
+        if len(rows) < 5:
+            continue
         
         # Calculate aspect ratio of bounding box as a simple linearity proxy
         width = cols.max() - cols.min() + 1

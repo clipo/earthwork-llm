@@ -9,12 +9,16 @@ Usage:
     python scripts/build_correct.py            # default named sites
 """
 from __future__ import annotations
-import json, math, sys, time
+import json
+import math
+import sys
+import time
 from pathlib import Path
 import numpy as np
 from scipy.ndimage import gaussian_filter
-import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
-from matplotlib import cm
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 
 sys.path.insert(0, ".")
 from earthwork_llm.ingestion.yazoo_downloader import YazooDownloader  # noqa (ensure repo import path)
@@ -25,7 +29,8 @@ UTM = "EPSG:26915"
 RES = 1.0
 HALF_M = 300        # 600 m window
 TILE = 1024
-OUT = Path("data/correct"); (OUT / "img").mkdir(parents=True, exist_ok=True)
+OUT = Path("data/correct")
+(OUT / "img").mkdir(parents=True, exist_ok=True)
 TO_WGS = Transformer.from_crs(UTM, "EPSG:4326", always_xy=True)
 
 # Named sites to correct: (id, label, published UTM15N x, y)
@@ -38,17 +43,22 @@ SITES = [
 
 def fetch_dem(cx, cy, half_m):
     src = Usgs3depImageServerSource()
-    xmin = math.floor(cx - half_m); ymax = math.ceil(cy + half_m)
+    xmin = math.floor(cx - half_m)
+    ymax = math.ceil(cy + half_m)
     W = H = int(2 * half_m)
     full = np.full((H, W), np.nan, "float32")
     for py in range(0, H, TILE):
         for px in range(0, W, TILE):
-            tcx = (xmin + px) + TILE / 2.0; tcy = (ymax - py) - TILE / 2.0
+            tcx = (xmin + px) + TILE / 2.0
+            tcy = (ymax - py) - TILE / 2.0
             req = WindowRequest(center_x=tcx, center_y=tcy, utm_crs=UTM, resolution_m=RES, size_px=TILE)
             for a in range(5):
-                try: arr = src.fetch_window(req); break
+                try:
+                    arr = src.fetch_window(req)
+                    break
                 except Exception:
-                    if a == 4: raise
+                    if a == 4:
+                        raise
                     time.sleep(2 * (a + 1))
             h, w = min(TILE, H - py), min(TILE, W - px)
             full[py:py+h, px:px+w] = arr[:h, :w]
@@ -57,8 +67,10 @@ def fetch_dem(cx, cy, half_m):
 
 def hillshade(rel, az_deg=315, alt=45):
     gy, gx = np.gradient(rel)
-    slope = np.arctan(np.hypot(gy, gx)); aspect = np.arctan2(-gx, gy)
-    az = math.radians(az_deg); zen = math.radians(90 - alt)
+    slope = np.arctan(np.hypot(gy, gx))
+    aspect = np.arctan2(-gx, gy)
+    az = math.radians(az_deg)
+    zen = math.radians(90 - alt)
     hs = np.cos(zen)*np.cos(slope) + np.sin(zen)*np.sin(slope)*np.cos(az - aspect)
     return np.clip(hs, 0, 1)
 
@@ -68,7 +80,8 @@ def main():
     for sid, label, cx, cy in SITES:
         print(f"== {label} ==", flush=True)
         dem, xmin, ymax, W, H = fetch_dem(cx, cy, HALF_M)
-        mask = np.isfinite(dem); filled = np.where(mask, dem, np.nanmedian(dem))
+        mask = np.isfinite(dem)
+        filled = np.where(mask, dem, np.nanmedian(dem))
         rel = filled - np.nanmedian(filled)
         lw = rel - gaussian_filter(filled, 40)
         # Crisp grayscale multidirectional hillshade, contrast-stretched.
@@ -83,11 +96,15 @@ def main():
         orange = np.array([1.0, 0.55, 0.0])
         a = (0.75 * posn)[..., None]
         img = np.clip(base * (1 - a) + orange[None, None, :] * a, 0, 1)
-        fig, ax = plt.subplots(figsize=(7, 7)); ax.imshow(img); ax.axis("off")
+        fig, ax = plt.subplots(figsize=(7, 7))
+        ax.imshow(img)
+        ax.axis("off")
         fig.subplots_adjust(0, 0, 1, 1)
-        fig.savefig(OUT / "img" / f"{sid}.png", dpi=100); plt.close(fig)
+        fig.savefig(OUT / "img" / f"{sid}.png", dpi=100)
+        plt.close(fig)
         # published pixel (fractional)
-        pfx = (cx - xmin) / W; pfy = (ymax - cy) / H
+        pfx = (cx - xmin) / W
+        pfy = (ymax - cy) / H
         lon, lat = TO_WGS.transform(cx, cy)
         sites_out.append(dict(id=sid, label=label,
                               pub_utm_x=cx, pub_utm_y=cy, pub_lat=round(lat, 6), pub_lon=round(lon, 6),

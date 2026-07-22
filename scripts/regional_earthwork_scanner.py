@@ -17,7 +17,6 @@ import argparse
 import logging
 import json
 import math
-import os
 import pandas as pd
 import numpy as np
 from pathlib import Path
@@ -43,7 +42,6 @@ from demo_terrain_query import (
     load_dem_geotiff,
     make_hillshade,
     classify_geomorphon_simple,
-    make_composite_panel,
     make_multi_view_panel,
     render_overlay
 )
@@ -162,8 +160,9 @@ def main():
     # Parse bbox
     try:
         bbox_wgs84 = tuple(map(float, args.bbox.split(",")))
-        if len(bbox_wgs84) != 4: raise ValueError
-    except:
+        if len(bbox_wgs84) != 4:
+            raise ValueError
+    except Exception:
         log.error("Invalid bbox format. Use min_lon,min_lat,max_lon,max_lat")
         return
 

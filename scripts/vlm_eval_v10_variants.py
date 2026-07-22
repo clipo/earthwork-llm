@@ -13,7 +13,8 @@ Modes (--mode):
 Same env vars as vlm_eval_v10.py; --set eskew only.
 """
 from __future__ import annotations
-import sys, argparse
+import sys
+import argparse
 
 sys.path.insert(0, "scripts")
 sys.path.insert(0, "src")

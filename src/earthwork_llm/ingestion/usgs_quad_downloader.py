@@ -141,6 +141,7 @@ class QuadDownloadProgress:
     last_updated: str = ""
 
     def to_dict(self) -> Dict:
+        """Return the progress record as a JSON-serializable dict."""
         return {
             "downloaded": self.downloaded,
             "failed": self.failed,
@@ -150,6 +151,7 @@ class QuadDownloadProgress:
 
     @classmethod
     def from_dict(cls, data: Dict) -> "QuadDownloadProgress":
+        """Rebuild a progress record from :meth:`to_dict` output."""
         return cls(
             downloaded=data.get("downloaded", []),
             failed=data.get("failed", []),
@@ -442,7 +444,7 @@ class USGSQuadDownloader:
                 total_size += quad.size_bytes
 
         logger.info(f"\n{'='*60}")
-        logger.info(f"Batch complete:")
+        logger.info("Batch complete:")
         logger.info(f"  Success: {len(downloaded)}")
         logger.info(f"  Failed: {len(self.progress.failed)}")
         logger.info(f"  Total size: {total_size/(1024**3):.2f} GB")

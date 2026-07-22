@@ -12,7 +12,11 @@ generated for the northern basin), so this tests the NLCD and linearity layers
 only. Whatever the result, it is reported as measured.
 """
 from __future__ import annotations
-import os, sys, io, csv, math, json
+import os
+import io
+import csv
+import math
+import json
 import numpy as np
 from pathlib import Path
 
@@ -30,7 +34,7 @@ WIN = 160
 
 def load_sites():
     with open(SEED_CSV) as f:
-        lines = [l for l in f if not l.lstrip().startswith("#")]
+        lines = [ln for ln in f if not ln.lstrip().startswith("#")]
     rows = list(csv.DictReader(io.StringIO("".join(lines))))
     out = []
     for r in rows:
@@ -88,7 +92,8 @@ def main():
     df = pd.DataFrame(rows)
     df.to_csv(OUT / "shield_eskew_results.csv", index=False)
     ok = df[~df.verdict.str.startswith("ERROR")]
-    mo = ok[ok.label == 1]; md = ok[ok.label == 0]
+    mo = ok[ok.label == 1]
+    md = ok[ok.label == 0]
     print("\n===== Shield V2 (NLCD + linearity; proximity layer inactive) =====")
     for nm, g in (("confirmed mounds", mo), ("modern earthworks", md)):
         c = g.verdict.value_counts().to_dict()

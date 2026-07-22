@@ -9,7 +9,10 @@ No caption text is baked into the image; captions belong to the manuscript.
 Site coordinates come from the restricted gold list (SHELL_RING_GOLD).
 """
 from __future__ import annotations
-import os, sys, math, csv
+import os
+import sys
+import math
+import csv
 import numpy as np
 from pyproj import Transformer
 from scipy.ndimage import gaussian_filter
@@ -39,8 +42,10 @@ def get_dem(lat, lon, half):
 
 def hillshade(dem, az):
     gy, gx = np.gradient(dem)
-    sl = np.arctan(np.hypot(gy, gx)); asp = np.arctan2(-gx, gy)
-    z = math.radians(45); a = math.radians(az)
+    sl = np.arctan(np.hypot(gy, gx))
+    asp = np.arctan2(-gx, gy)
+    z = math.radians(45)
+    a = math.radians(az)
     return np.clip(np.cos(z) * np.cos(sl) + np.sin(z) * np.sin(sl) * np.cos(a - asp), 0, 1)
 
 
@@ -64,7 +69,8 @@ gs = fig.add_gridspec(2, 5, height_ratios=[1.0, 1.0], hspace=0.18, wspace=0.10)
 # ---- (a) structural signature at 38BU0300 -----------------------------------
 H = 110
 dem = get_dem(32.3409787, -80.7775707, H)
-rel = lrm(dem); geo = classify_geomorphon_simple(dem)
+rel = lrm(dem)
+geo = classify_geomorphon_simple(dem)
 panels = [(multihs(dem), "gray", None, "hillshade"),
           (rel, "RdBu_r", np.nanpercentile(np.abs(rel), 98), "local relief"),
           (geo, "tab10", None, "geomorphons")]
@@ -77,7 +83,8 @@ for k, (im, cm, v, lab) in enumerate(panels):
     else:
         ax.imshow(im, cmap=cm)
     ax.set_title(lab, fontsize=9)
-    ax.set_xticks([]); ax.set_yticks([])
+    ax.set_xticks([])
+    ax.set_yticks([])
     if k == 0:
         ax.text(0.03, 0.97, "a", transform=ax.transAxes, fontsize=14, fontweight="bold",
                 va="top", color="k", path_effects=[pe.withStroke(linewidth=2, foreground="w")])
@@ -90,12 +97,14 @@ by_id = {sid: (la, lo) for sid, la, lo in sites}
 for k, sid in enumerate(CLEAR):
     la, lo = by_id[sid]
     ax = fig.add_subplot(gs[1, k])
-    d = get_dem(la, lo, H); r = lrm(d)
+    d = get_dem(la, lo, H)
+    r = lrm(d)
     v = np.nanpercentile(np.abs(r), 98)
     ax.imshow(r, cmap="RdBu_r", vmin=-v, vmax=v)
     ax.plot(H, H, "y+", ms=11, mew=2)
     ax.set_title(sid, fontsize=9)
-    ax.set_xticks([]); ax.set_yticks([])
+    ax.set_xticks([])
+    ax.set_yticks([])
     if k == 0:
         ax.text(0.03, 0.97, "b", transform=ax.transAxes, fontsize=14, fontweight="bold",
                 va="top", path_effects=[pe.withStroke(linewidth=2, foreground="w")])

@@ -12,8 +12,15 @@ Compares directly against arm A (Table B1): mound recall and modern-earthwork
 rejection, majority vote of three runs per site.
 """
 from __future__ import annotations
-import sys, os, io, re, csv, json, time, math
-import numpy as np, requests
+import os
+import io
+import re
+import csv
+import json
+import time
+import math
+import numpy as np
+import requests
 from pathlib import Path
 from PIL import Image
 
@@ -49,7 +56,7 @@ VERDICT_INSTR = (
 
 def load_eval_set():
     with open(SEED_CSV) as f:
-        lines = [l for l in f if not l.lstrip().startswith("#")]
+        lines = [ln for ln in f if not ln.lstrip().startswith("#")]
     rows = list(csv.DictReader(io.StringIO("".join(lines))))
     out = []
     for r in rows:
@@ -79,8 +86,10 @@ def clean(dem):
 
 def hillshade(dem, az=315):
     gy, gx = np.gradient(dem)
-    sl = np.arctan(np.hypot(gy, gx)); asp = np.arctan2(-gx, gy)
-    z = math.radians(45); a = math.radians(az)
+    sl = np.arctan(np.hypot(gy, gx))
+    asp = np.arctan2(-gx, gy)
+    z = math.radians(45)
+    a = math.radians(az)
     return np.clip(np.cos(z) * np.cos(sl) + np.sin(z) * np.sin(sl) * np.cos(a - asp), 0, 1)
 
 
@@ -170,8 +179,10 @@ def main():
     df.to_csv(OUT_DIR / "ablation_context_results.csv", index=False)
     ev = df[df.pred.notna()]
     y, p = ev.label.astype(int), ev.pred.astype(int)
-    tp = int(((y == 1) & (p == 1)).sum()); fn = int(((y == 1) & (p == 0)).sum())
-    tn = int(((y == 0) & (p == 0)).sum()); fp = int(((y == 0) & (p == 1)).sum())
+    tp = int(((y == 1) & (p == 1)).sum())
+    fn = int(((y == 1) & (p == 0)).sum())
+    tn = int(((y == 0) & (p == 0)).sum())
+    fp = int(((y == 0) & (p == 1)).sum())
     print("\n===== Arm B: VLM with 600 m context view =====")
     print(f"  confusion: TP={tp} FN={fn} TN={tn} FP={fp}")
     print(f"  mound recall:               {tp}/{tp+fn}")

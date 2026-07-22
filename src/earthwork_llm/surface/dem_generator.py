@@ -31,7 +31,6 @@ import numpy as np
 from scipy import sparse
 from scipy.interpolate import NearestNDInterpolator, griddata
 from scipy.sparse.linalg import spsolve
-from scipy.spatial import Delaunay
 
 logger = logging.getLogger(__name__)
 
@@ -136,7 +135,6 @@ def inpaint_nans_by_springs(A: np.ndarray, inplace: bool = False, neighbors: int
 
     # Build reduced system
     n_nan = len(nan_indices)
-    n_known = len(known_indices)
 
     # Left-hand side: connections between NaN pixels
     lhs_row = []
@@ -197,7 +195,6 @@ def inpaint_nans_by_fda(A: np.ndarray, fast: bool = True, inplace: bool = False)
         A = A.copy()
 
     n, m = A.shape
-    nm = n * m
 
     nan_mask = np.isnan(A)
     nan_indices = np.where(nan_mask.ravel())[0]
@@ -375,7 +372,7 @@ def sample_surrounding_residuals(
     Returns:
         Array of sampled residual values
     """
-    from scipy.ndimage import binary_dilation, distance_transform_edt
+    from scipy.ndimage import binary_dilation
 
     # Create search zone around voids (dilation)
     struct = np.ones((2 * search_radius + 1, 2 * search_radius + 1))

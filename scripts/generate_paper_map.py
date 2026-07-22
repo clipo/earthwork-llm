@@ -68,11 +68,12 @@ def load_gold():
 
 def load_eskew():
     """Return (lons, lats) of the 28-site Eskew field-verified set."""
-    import csv, io
+    import csv
+    import io
     from pyproj import Transformer
     with open(SEED_CSV) as f:
         rows = list(csv.DictReader(io.StringIO(
-            "".join(l for l in f if not l.lstrip().startswith("#")))))
+            "".join(ln for ln in f if not ln.lstrip().startswith("#")))))
     inv = Transformer.from_crs("EPSG:26915", "EPSG:4326", always_xy=True)
     lons, lats = [], []
     for r in rows:
@@ -89,7 +90,8 @@ def load_eskew():
             lon, lat = inv.transform(float(r["utm15n_x_m"]), float(r["utm15n_y_m"]))
         except (ValueError, KeyError):
             continue
-        lons.append(lon); lats.append(lat)
+        lons.append(lon)
+        lats.append(lat)
     return lons, lats
 
 

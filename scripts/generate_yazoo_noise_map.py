@@ -16,7 +16,6 @@ import argparse
 import logging
 import json
 from pathlib import Path
-from typing import List, Dict, Tuple
 
 # Import TerraLLM ingestion tools
 from earthwork_llm.ingestion.usgs_quad_downloader import USGSQuadDownloader
@@ -37,7 +36,7 @@ def main():
     # Parse bbox
     try:
         bbox_wgs84 = tuple(map(float, args.bbox.split(",")))
-    except:
+    except Exception:
         log.error("Invalid bbox")
         return
 

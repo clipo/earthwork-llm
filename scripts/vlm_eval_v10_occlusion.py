@@ -10,12 +10,11 @@ fifth arm.
 Same env vars as vlm_eval_v10.py. Writes --out CSV in the same format.
 """
 from __future__ import annotations
-import sys, os
+import sys
 
 sys.path.insert(0, "scripts")
 sys.path.insert(0, "src")
 
-import numpy as np
 from PIL import Image
 import vlm_eval_v10 as base
 

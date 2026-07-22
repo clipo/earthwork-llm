@@ -37,6 +37,8 @@ import math
 
 
 class Decision(str, Enum):
+    """Screening outcome for a candidate: keep, flag for review, or reject."""
+
     KEEP = "keep"
     FLAG = "flag"
     REJECT = "reject"
@@ -69,10 +71,12 @@ class ShieldVerdict:
 
     @property
     def rejected(self) -> bool:
+        """True if the candidate was screened out."""
         return self.decision == Decision.REJECT
 
     @property
     def kept(self) -> bool:
+        """True if the candidate survived screening (kept or flagged)."""
         return self.decision != Decision.REJECT
 
 

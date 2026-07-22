@@ -29,7 +29,6 @@ from enum import IntEnum
 from typing import Dict, List, Optional, Set, Tuple, Union
 
 import numpy as np
-from scipy import ndimage
 
 logger = logging.getLogger(__name__)
 
@@ -881,22 +880,22 @@ def ternary_pattern_from_openness(
 
     for direction in range(8):
         # Compute openness in this direction
-        O = compute_openness(dem, cell_size, lookup_pixels, neighbors=np.array([direction]))
+        opn = compute_openness(dem, cell_size, lookup_pixels, neighbors=np.array([direction]))
 
         if use_negative_openness:
             # Compute negative openness (openness of inverted terrain)
             O_neg = compute_openness(
                 -dem, cell_size, lookup_pixels, neighbors=np.array([direction])
             )
-            O = O - O_neg
+            opn = opn - O_neg
         else:
             # Simple openness relative to horizontal
-            O = O - 90.0
+            opn = opn - 90.0
 
         # Classify into ternary values
         ternary = np.ones((nrows, ncols), dtype=np.uint16)  # Default: flat (1)
-        ternary[O > threshold_angle] = 2  # Above threshold: up
-        ternary[O < -threshold_angle] = 0  # Below threshold: down
+        ternary[opn > threshold_angle] = 2  # Above threshold: up
+        ternary[opn < -threshold_angle] = 0  # Below threshold: down
 
         # Encode into terrain code
         tc = tc + ternary * pows[direction]

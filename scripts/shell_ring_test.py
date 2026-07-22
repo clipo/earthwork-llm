@@ -27,7 +27,11 @@ work. (3) The False-Positive Shield's NLCD layer does NOT discriminate rings her
 transfer for free.
 """
 from __future__ import annotations
-import os, sys, math, csv, argparse
+import os
+import sys
+import math
+import csv
+import argparse
 import numpy as np
 from pathlib import Path
 from pyproj import Transformer
@@ -65,11 +69,13 @@ def score_center(rel, raised, cy, cx):
     for a in np.linspace(0, 2 * np.pi, NSEC, endpoint=False):
         br, bv = None, -1e9
         for R in range(RMIN, RMAX):
-            yy = int(round(cy + R * math.sin(a))); xx = int(round(cx + R * math.cos(a)))
+            yy = int(round(cy + R * math.sin(a)))
+            xx = int(round(cx + R * math.cos(a)))
             if not (0 <= yy < H and 0 <= xx < W):
                 break
             if raised[yy, xx] and rel[yy, xx] > bv:
-                bv = rel[yy, xx]; br = R
+                bv = rel[yy, xx]
+                br = R
         peaks.append((br, bv))
     sec = [1 if (r and v > RELTH) else 0 for r, v in peaks]
     cov = sum(sec) / NSEC
@@ -83,8 +89,11 @@ def score_center(rel, raised, cy, cx):
     Rm = float(np.median(rad))
     y0, y1 = max(0, cy - RMAX), min(H, cy + RMAX)
     x0, x1 = max(0, cx - RMAX), min(W, cx + RMAX)
-    sub = rel[y0:y1, x0:x1]; yy, xx = np.mgrid[y0:y1, x0:x1]; dd = np.hypot(yy - cy, xx - cx)
-    disk = sub[dd < max(Rm - 7, 3)]; cen = disk.mean() if disk.size else 0.0
+    sub = rel[y0:y1, x0:x1]
+    yy, xx = np.mgrid[y0:y1, x0:x1]
+    dd = np.hypot(yy - cy, xx - cx)
+    disk = sub[dd < max(Rm - 7, 3)]
+    cen = disk.mean() if disk.size else 0.0
     ann = float(np.mean([v for r, v in peaks if r and v > RELTH]))
     if cen >= ann - 0.12:
         return 0.0, int(Rm)                                               # need depression relative to rim
@@ -96,13 +105,15 @@ def score_center(rel, raised, cy, cx):
 def detect(dem):
     rel, raised = prep(dem)
     H, W = rel.shape
-    smap = np.zeros((H, W)); rmap = np.zeros((H, W), int)
+    smap = np.zeros((H, W))
+    rmap = np.zeros((H, W), int)
     for cy in range(30, H - 30, 5):
         for cx in range(30, W - 30, 5):
             if math.hypot(cy - HALF, cx - HALF) > CENTRAL:
                 continue
             s, R = score_center(rel, raised, cy, cx)
-            smap[cy, cx] = s; rmap[cy, cx] = R
+            smap[cy, cx] = s
+            rmap[cy, cx] = R
     mx = maximum_filter(smap, size=30)
     peaks = np.argwhere((smap == mx) & (smap > 0.12))
     if not len(peaks):
@@ -115,17 +126,20 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="data/shell_rings")
     args = ap.parse_args()
-    outdir = Path(args.out); outdir.mkdir(parents=True, exist_ok=True)
+    outdir = Path(args.out)
+    outdir.mkdir(parents=True, exist_ok=True)
     tf = Transformer.from_crs("EPSG:4326", "EPSG:26917", always_xy=True)
     rows = [r for r in csv.DictReader(open(GOLD)) if r.get("mound_id")]
     print(f"gold list: {len(rows)} sites")
-    fig, ax = plt.subplots(2, 5, figsize=(16, 7.5)); ax = ax.ravel()
+    fig, ax = plt.subplots(2, 5, figsize=(16, 7.5))
+    ax = ax.ravel()
     results, offs = [], []
     for j, r in enumerate(rows):
         sid = r["mound_id"].strip()
         x, y = tf.transform(float(r["longitude"]), float(r["latitude"]))
         dem = fetch_dem(x, y, 2 * HALF, crs_epsg=UTM_EPSG, resolution_m=RES)
-        m = np.isfinite(dem); dem = np.where(m, dem, np.nanmedian(dem[m])).astype("float32")
+        m = np.isfinite(dem)
+        dem = np.where(m, dem, np.nanmedian(dem[m])).astype("float32")
         rel, b = detect(dem)
         off = math.hypot(b[1] - HALF, b[0] - HALF) * RES if b else None
         offs.append(off)
@@ -138,11 +152,13 @@ def main():
         if b:
             ax[j].add_patch(plt.Circle((b[1], b[0]), b[2], fill=False, ec="lime", lw=2))
         ax[j].set_title(f"{sid}  {('%.0f m R%d' % (off, b[2])) if b else 'no ring'}", fontsize=8)
-        ax[j].set_xticks([]); ax[j].set_yticks([])
+        ax[j].set_xticks([])
+        ax[j].set_yticks([])
         print(f"  {sid:12} " + (f"offset {off:5.1f} m  R={b[2]:>2}  score {b[3]:.3f}" if b else "no ring found"))
     fig.suptitle("Davis coastal-SC shell rings (public 3DEP, UTM 17N, no retraining): "
                  "yellow + = catalogue coordinate, green = detected ring", fontsize=11)
-    fig.tight_layout(); fig.savefig(outdir / "shell_ring_gallery.png", dpi=110, bbox_inches="tight")
+    fig.tight_layout()
+    fig.savefig(outdir / "shell_ring_gallery.png", dpi=110, bbox_inches="tight")
     # A shell ring is 20-120 m across; the catalogue point marks a spot on or
     # near the feature, not its geometric centre. So a detection is a hit if the
     # catalogue coordinate falls WITHIN the detected ring footprint (offset <=

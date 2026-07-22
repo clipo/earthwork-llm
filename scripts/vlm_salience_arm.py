@@ -23,7 +23,13 @@ Env: VLM_API (default http://localhost:8001/v1/chat/completions),
      VLM_MODEL (default terrallm-v91).
 """
 from __future__ import annotations
-import os, re, csv, sys, json, time, argparse
+import os
+import re
+import csv
+import sys
+import json
+import time
+import argparse
 import requests
 
 sys.path.insert(0, "scripts")
@@ -174,8 +180,8 @@ def eskew_sites():
 
 
 def auc(scores, labels):
-    pos = [s for s, l in zip(scores, labels) if l == 1 and s is not None]
-    neg = [s for s, l in zip(scores, labels) if l == 0 and s is not None]
+    pos = [s for s, lab in zip(scores, labels) if lab == 1 and s is not None]
+    neg = [s for s, lab in zip(scores, labels) if lab == 0 and s is not None]
     if not pos or not neg:
         return None
     wins = sum((1.0 if p > n else 0.5 if p == n else 0.0) for p in pos for n in neg)

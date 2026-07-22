@@ -7,9 +7,12 @@ elsewhere (classify_geomorphon_simple + detect_earthworks), and matches the
 nearest candidate to the catalogue point in true meters.
 """
 from __future__ import annotations
-import os, sys, math
+import os
+import sys
+import math
 from pathlib import Path
-import numpy as np, pandas as pd
+import numpy as np
+import pandas as pd
 
 sys.path.insert(0, ".")
 sys.path.insert(0, "scripts")
@@ -17,7 +20,9 @@ from earthwork_llm.ingestion.imageserver import Usgs3depImageServerSource, Windo
 from demo_terrain_query import classify_geomorphon_simple
 from earthwork_query import detect_earthworks
 
-UTM = "EPSG:26915"; RES = 1.0; CROP = 150  # 150 m half-window -> 300 m tile (matches original crop_m=300)
+UTM = "EPSG:26915"
+RES = 1.0
+CROP = 150  # 150 m half-window -> 300 m tile (matches original crop_m=300)
 GOLD = os.environ.get("EARTHWORK_GOLD_LIST", "data/reference/located_mounds.csv")  # RESTRICTED reference set, NOT shipped with this repo (see README, Data); set EARTHWORK_GOLD_LIST to reproduce Table 1
 TOLS = [10, 15, 20, 25, 30]
 
@@ -35,16 +40,20 @@ def main():
     df = pd.read_csv(GOLD)
     rows = []
     for _, r in df.iterrows():
-        mid = str(r["mound_id"]); cx = float(r["utm15n_easting_m"]); cy = float(r["utm15n_northing_m"])
+        mid = str(r["mound_id"])
+        cx = float(r["utm15n_easting_m"])
+        cy = float(r["utm15n_northing_m"])
         try:
             dem, xmin, ymax = fetch_utm(cx, cy, CROP)
         except Exception as e:
-            rows.append(dict(mound_id=mid, status=f"fail:{type(e).__name__}")); continue
+            rows.append(dict(mound_id=mid, status=f"fail:{type(e).__name__}"))
+            continue
         dem = np.where(np.isfinite(dem), dem, np.nanmedian(dem[np.isfinite(dem)]) if np.isfinite(dem).any() else 0.0).astype("float32")
         geo = classify_geomorphon_simple(dem)
         cands = detect_earthworks(geo, dem, "Find pre-European earthwork mounds")
         # mound pixel: col = cx - xmin, row = ymax - cy  (y down)
-        gpx = cx - xmin; gpy = ymax - cy
+        gpx = cx - xmin
+        gpy = ymax - cy
         best = None
         for c in cands:
             d = math.hypot(c["x"] - gpx, c["y"] - gpy) * RES  # true meters (UTM 1 m grid)

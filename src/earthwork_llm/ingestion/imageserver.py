@@ -71,6 +71,8 @@ from dataclasses import dataclass  # noqa: E402
 
 @dataclass
 class WindowRequest:
+    """A square DEM window centered on a projected coordinate."""
+
     center_x: float
     center_y: float
     utm_crs: str          # e.g. "EPSG:26915"
@@ -82,6 +84,7 @@ class Usgs3depImageServerSource:
     """Thin object wrapper around :func:`fetch_dem`."""
 
     def fetch_window(self, req: "WindowRequest") -> np.ndarray:
+        """Fetch the DEM window described by ``req`` via :func:`fetch_dem`."""
         epsg = int(str(req.utm_crs).split(":")[-1])
         return fetch_dem(
             req.center_x, req.center_y, req.size_px,

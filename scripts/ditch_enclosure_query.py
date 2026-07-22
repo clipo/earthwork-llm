@@ -218,7 +218,8 @@ def _render(dem, geo, classes, circuits, png_path: Path, title: str) -> None:
                         (c.cx_px, c.cy_px), color=color, fontsize=9,
                         ha="center")
     for ax in axes:
-        ax.set_xticks([]); ax.set_yticks([])
+        ax.set_xticks([])
+        ax.set_yticks([])
     fig.suptitle(title)
     fig.tight_layout()
     png_path.parent.mkdir(parents=True, exist_ok=True)

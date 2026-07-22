@@ -10,7 +10,9 @@ modern linear feature, then re-evaluates Shield V2 with all three layers active
 completed confusion table.
 """
 from __future__ import annotations
-import sys, time, json, math
+import time
+import json
+import math
 import requests
 import pandas as pd
 from pathlib import Path
@@ -19,7 +21,7 @@ from earthwork_llm.surface.false_positive_shield import FalsePositiveShield
 from pyproj import Transformer
 
 PRIOR = "data/shield_eskew/shield_eskew_results.csv"
-import os
+import os  # noqa: E402  (sys.path setup must precede repo-local imports)
 SEED = os.environ.get("EARTHWORK_ABLATION_SET", "data/reference/mounds_seed.csv")
 OUT = Path("data/shield_eskew")
 # Overpass instances (tried in order). A descriptive User-Agent is required;
@@ -78,9 +80,10 @@ def nearest_feature(lat, lon):
 def main():
     prior = pd.read_csv(PRIOR)
     # site -> coordinates from the seed list
-    import csv, io
+    import csv
+    import io
     rows = [r for r in csv.DictReader(io.StringIO("".join(
-        l for l in open(SEED) if not l.lstrip().startswith("#"))))]
+        ln for ln in open(SEED) if not ln.lstrip().startswith("#"))))]
     coords = {}
     inv = Transformer.from_crs("EPSG:26915", "EPSG:4326", always_xy=True)
     for r in rows:
@@ -122,7 +125,8 @@ def main():
         time.sleep(2)   # be polite to Overpass
     df = pd.DataFrame(out)
     df.to_csv(OUT / "shield_eskew_proximity.csv", index=False)
-    mo = df[df.label == 1]; md = df[df.label == 0]
+    mo = df[df.label == 1]
+    md = df[df.label == 0]
     print("\n===== Shield V2 with ALL layers (linearity + NLCD + OSM proximity) =====")
     print(f"  mounds  n={len(mo)}: {mo.verdict_full.value_counts().to_dict()}")
     print(f"  moderns n={len(md)}: {md.verdict_full.value_counts().to_dict()}")

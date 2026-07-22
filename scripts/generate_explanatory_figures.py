@@ -18,8 +18,7 @@ modern-feature layers with their KEEP / FLAG / REJECT outcomes.
 import os
 
 import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
+from matplotlib.patches import FancyBboxPatch
 import numpy as np
 
 OUT = "docs/figures"

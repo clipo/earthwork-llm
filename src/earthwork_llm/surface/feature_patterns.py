@@ -302,7 +302,6 @@ class FeaturePatternRecognizer:
         micro = geomorphons.get("2m")
         meso = geomorphons.get("5m")
         local = geomorphons.get("10m")
-        regional = geomorphons.get("25m")
 
         if micro is None or meso is None:
             logger.warning("Missing required geomorphon scales (2m, 5m)")
@@ -803,7 +802,6 @@ def compute_morphometric_properties(
         - depth: Elevation difference (center vs surrounding)
         - bbox_*: Bounding box coordinates
     """
-    from scipy import ndimage as ndi
 
     # Find component pixels
     rows, cols = np.where(component)

@@ -10,7 +10,10 @@ samples the same landform population without touching the evaluated sites, and
 reports the chance strict and containment rates.
 """
 from __future__ import annotations
-import os, sys, csv, math, json
+import os
+import csv
+import math
+import json
 import numpy as np
 from pathlib import Path
 
@@ -41,14 +44,17 @@ def main():
             dem = fetch_dem(x, y, 2 * HALF, crs_epsg=26917, resolution_m=RES)
             m = np.isfinite(dem)
             if m.mean() < 0.6:
-                rows.append(dict(pt=tag, status="skipped_nodata")); continue
+                rows.append(dict(pt=tag, status="skipped_nodata"))
+                continue
             dem = np.where(m, dem, np.nanmedian(dem[m])).astype("float32")
             # skip open-water decoys (near-zero relief windows are not comparable land)
             if float(np.nanpercentile(dem, 95) - np.nanpercentile(dem, 5)) < 0.5:
-                rows.append(dict(pt=tag, status="skipped_water")); continue
+                rows.append(dict(pt=tag, status="skipped_water"))
+                continue
             rel, b = detect(dem)
             if b is None:
-                rows.append(dict(pt=tag, status="ok", ring=False, strict=False, contain=False)); continue
+                rows.append(dict(pt=tag, status="ok", ring=False, strict=False, contain=False))
+                continue
             off = math.hypot(b[1] - HALF, b[0] - HALF) * RES
             R = b[2]
             rows.append(dict(pt=tag, status="ok", ring=True, offset=round(off, 1), R=R,
@@ -60,7 +66,7 @@ def main():
     ok = [r for r in rows if r.get("status") == "ok"]
     strict = sum(1 for r in ok if r.get("strict"))
     contain = sum(1 for r in ok if r.get("contain"))
-    print(f"\n===== Negative control (frozen detector, decoy points 500 m off-site) =====")
+    print("\n===== Negative control (frozen detector, decoy points 500 m off-site) =====")
     print(f"  valid decoy points: {len(ok)} (of {len(pts)}; rest water/nodata)")
     print(f"  chance STRICT hits:      {strict}/{len(ok)}  ({100*strict/max(len(ok),1):.0f}%)")
     print(f"  chance CONTAINMENT hits: {contain}/{len(ok)}  ({100*contain/max(len(ok),1):.0f}%)")

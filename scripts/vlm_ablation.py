@@ -21,8 +21,16 @@ Requires a served model, e.g. via scripts/serve_yazoo_model.sh; point at it with
 VLM_API / VLM_MODEL. Runs on CPU for the DEM/geomorphon work; the model needs a GPU.
 """
 from __future__ import annotations
-import sys, os, io, re, csv, json, time, argparse
-import numpy as np, requests
+import sys
+import os
+import io
+import re
+import csv
+import json
+import time
+import argparse
+import numpy as np
+import requests
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))  # sibling scripts
@@ -55,7 +63,7 @@ def load_eval_set():
             f"Eval set not found at {SEED_CSV}. This set is restricted and not shipped "
             "(see docs/DATA_POLICY.md); set EARTHWORK_ABLATION_SET to your copy.")
     with open(SEED_CSV) as f:
-        lines = [l for l in f if not l.lstrip().startswith("#")]
+        lines = [ln for ln in f if not ln.lstrip().startswith("#")]
     rows = list(csv.DictReader(io.StringIO("".join(lines))))
     out = []
     for r in rows:
@@ -169,9 +177,12 @@ def main():
 def score(df):
     ev = df[df.pred.notna()]
     y, p = ev.label.astype(int), ev.pred.astype(int)
-    tp = int(((y == 1) & (p == 1)).sum()); fn = int(((y == 1) & (p == 0)).sum())
-    tn = int(((y == 0) & (p == 0)).sum()); fp = int(((y == 0) & (p == 1)).sum())
-    n = len(ev); acc = (tp + tn) / n if n else float("nan")
+    tp = int(((y == 1) & (p == 1)).sum())
+    fn = int(((y == 1) & (p == 0)).sum())
+    tn = int(((y == 0) & (p == 0)).sum())
+    fp = int(((y == 0) & (p == 1)).sum())
+    n = len(ev)
+    acc = (tp + tn) / n if n else float("nan")
     rec = tp / (tp + fn) if (tp + fn) else float("nan")       # mound recall
     spec = tn / (tn + fp) if (tn + fp) else float("nan")      # modern-earthwork rejection
     prec = tp / (tp + fp) if (tp + fp) else float("nan")

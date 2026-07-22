@@ -43,7 +43,7 @@ except ImportError:
     VISION_AVAILABLE = False
 
 try:
-    from pdf2image import convert_from_bytes, convert_from_path
+    from pdf2image import convert_from_bytes, convert_from_path  # noqa: F401  (availability probe)
 
     PDF2IMAGE_AVAILABLE = True
 except ImportError:
@@ -64,17 +64,17 @@ except ImportError:
     CV2_AVAILABLE = False
 
 try:
-    import rasterio
-    from rasterio.transform import xy
+    import rasterio  # noqa: F401  (availability probe)
+    from rasterio.transform import xy  # noqa: F401  (availability probe)
 
     RASTERIO_AVAILABLE = True
 except ImportError:
     RASTERIO_AVAILABLE = False
 
 try:
-    import geopandas as gpd
-    from shapely.geometry import LineString, MultiLineString, Point, Polygon, box
-    from shapely.ops import linemerge
+    import geopandas as gpd  # noqa: F401  (availability probe)
+    from shapely.geometry import LineString, MultiLineString, Point, Polygon, box  # noqa: F401  (availability probe)
+    from shapely.ops import linemerge  # noqa: F401  (availability probe)
 
     GEOPANDAS_AVAILABLE = True
 except ImportError:
@@ -233,6 +233,7 @@ class ExtractedFeature:
     metadata: Dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> Dict:
+        """Return the feature as a JSON-serializable dict."""
         return {
             "feature_type": self.feature_type,
             "name": self.name,
@@ -273,6 +274,7 @@ class ExtractionResult:
 
     @property
     def total_features(self) -> int:
+        """Total feature count across all categories."""
         return (
             len(self.trails)
             + len(self.roads)
@@ -282,6 +284,7 @@ class ExtractionResult:
         )
 
     def to_dict(self) -> Dict:
+        """Return the result (features plus summary counts) as a JSON-serializable dict."""
         return {
             "quad_name": self.quad_name,
             "quad_path": self.quad_path,
@@ -1067,7 +1070,7 @@ class USGSLabelExtractor:
                 result.streams.append(f)  # Add to streams (includes lakes)
 
             # Extract green areas (vegetation)
-            veg_areas = self.extract_area_features_by_color(
+            self.extract_area_features_by_color(
                 image, color="green", min_area=10000, geo_bounds=geo_bounds
             )
             # Could add a separate category for vegetation if needed
@@ -1197,7 +1200,7 @@ class USGSLabelExtractor:
         total_api_calls = sum(r.api_calls for r in results)
 
         logger.info(f"\n{'='*60}")
-        logger.info(f"Batch extraction complete:")
+        logger.info("Batch extraction complete:")
         logger.info(f"  Quads processed: {len(results)}")
         logger.info(f"  Total trails: {total_trails}")
         logger.info(f"  Total roads: {total_roads}")

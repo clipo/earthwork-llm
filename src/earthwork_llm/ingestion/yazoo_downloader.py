@@ -12,16 +12,11 @@ This downloader enables zero-shot detection of pre-European earthworks
 by fetching high-resolution data from the core Mississippian culture regions.
 """
 
-import json
 import logging
-import os
-import tempfile
-from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple
 
 import requests
-import numpy as np
 import time
 
 try:

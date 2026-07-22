@@ -18,10 +18,16 @@ Env: VLM_API (default http://localhost:8001/v1/chat/completions),
      VLM_MODEL (default terrallm-v91), EARTHWORK_GOLD_LIST.
 """
 from __future__ import annotations
-import os, re, csv, io, sys, json, time, argparse
+import os
+import re
+import csv
+import sys
+import json
+import time
+import argparse
 import numpy as np
 import requests
-from PIL import Image, ImageDraw
+from PIL import Image
 
 sys.path.insert(0, "scripts")
 sys.path.insert(0, "src")

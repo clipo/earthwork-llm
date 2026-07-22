@@ -5,8 +5,10 @@ Env: EARTHWORK_GOLD_LIST (corrected centers). Reads data/refind_utm/refind_utm.c
 Writes data/refind_utm/mound_relief_strata.csv and prints the stratified table.
 """
 from __future__ import annotations
-import os, sys
-import numpy as np, pandas as pd
+import os
+import sys
+import numpy as np
+import pandas as pd
 from scipy.ndimage import gaussian_filter
 
 sys.path.insert(0, "src")

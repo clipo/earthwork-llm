@@ -11,13 +11,14 @@ Usage:
         --out-dir data/validation_results
 """
 
+import os
 import argparse
 import logging
 import pandas as pd
 import numpy as np
 import io
 from pathlib import Path
-from typing import List, Dict, Tuple, Optional
+from typing import List, Tuple, Optional
 from pyproj import Transformer
 
 try:
@@ -99,11 +100,11 @@ def main():
 
     # Initialize GCS client if needed
     storage_client = None
-    bucket = None
     if (args.gold_list.startswith("gs://") or args.out_dir.startswith("gs://") or args.gcs_bucket) and GCS_AVAILABLE:
         storage_client = storage.Client()
         if args.gcs_bucket:
-            bucket = storage_client.bucket(args.gcs_bucket)
+            # construct-only: Bucket() validates the bucket name (may raise ValueError)
+            storage_client.bucket(args.gcs_bucket)
 
     # Resolve output directory
     out_dir_is_gcs = args.out_dir.startswith("gs://")
@@ -257,7 +258,7 @@ def main():
     else:
         log.warning("No 'found' results recorded.")
 
-    print(f"\nValidation Summary:")
+    print("\nValidation Summary:")
     print(summary_df[['mound_id', 'found', 'match_prob']] if not summary_df.empty else "Empty results")
 
 if __name__ == "__main__":

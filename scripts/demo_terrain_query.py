@@ -29,11 +29,8 @@ from __future__ import annotations
 
 import argparse
 import base64
-import json
 import logging
 import re
-import sys
-import time
 from io import BytesIO
 from pathlib import Path
 from typing import List, Optional, Tuple
@@ -295,7 +292,7 @@ def make_composite_panel(dem: np.ndarray, hillshade: np.ndarray, geo: np.ndarray
     axes[1].imshow(geo, cmap=cmap, vmin=-0.5, vmax=9.5, origin="lower")
     axes[1].set_title("Geomorphon (simplified)")
     axes[1].axis("off")
-    cs = axes[2].contour(dem, levels=15, colors="black", linewidths=0.4)
+    axes[2].contour(dem, levels=15, colors="black", linewidths=0.4)
     axes[2].imshow(hillshade, cmap="gray", origin="lower", alpha=0.6)
     axes[2].set_title("Hillshade + contours")
     axes[2].axis("off")

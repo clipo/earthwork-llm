@@ -12,7 +12,10 @@ Usage:
     python scripts/correct_server.py            # http://localhost:8787
 """
 from __future__ import annotations
-import csv, json, sys, math
+import csv
+import json
+import sys
+import math
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -56,9 +59,11 @@ def save_corr(rec):
            "corr_lat": round(lat, 6) if lat else "", "corr_lon": round(lon, 6) if lon else "",
            "shift_m": round(shift, 1), "reviewer": rec.get("reviewer", ""),
            "ts": datetime.now(timezone.utc).isoformat(timespec="seconds")}
-    cur = load_corr(); cur[rec["id"]] = row
+    cur = load_corr()
+    cur[rec["id"]] = row
     with (CORR / "corrected_coords.csv").open("w", newline="") as fh:
-        w = csv.DictWriter(fh, fieldnames=COLS); w.writeheader()
+        w = csv.DictWriter(fh, fieldnames=COLS)
+        w.writeheader()
         for r in cur.values():
             w.writerow({k: r.get(k, "") for k in COLS})
     return row
@@ -146,35 +151,48 @@ load();
 
 class H(BaseHTTPRequestHandler):
     def _s(self, code, body, ctype="application/json"):
-        if isinstance(body, (dict, list)): body = json.dumps(body).encode()
-        elif isinstance(body, str): body = body.encode()
-        self.send_response(code); self.send_header("Content-Type", ctype)
-        self.send_header("Content-Length", str(len(body))); self.end_headers(); self.wfile.write(body)
+        if isinstance(body, (dict, list)):
+            body = json.dumps(body).encode()
+        elif isinstance(body, str):
+            body = body.encode()
+        self.send_response(code)
+        self.send_header("Content-Type", ctype)
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
     def log_message(self, *a): pass
     def do_GET(self):
         p = urlparse(self.path).path
         try:
-            if p in ("/", "/index.html"): return self._s(200, PAGE, "text/html; charset=utf-8")
-            if p == "/api/sites": return self._s(200, sites())
-            if p.startswith("/api/corrected/"): return self._s(200, load_corr().get(p.rsplit("/", 1)[1], {}))
+            if p in ("/", "/index.html"):
+                return self._s(200, PAGE, "text/html; charset=utf-8")
+            if p == "/api/sites":
+                return self._s(200, sites())
+            if p.startswith("/api/corrected/"):
+                return self._s(200, load_corr().get(p.rsplit("/", 1)[1], {}))
             if p.startswith("/img/"):
                 fp = CORR / p.lstrip("/")
-                if fp.exists(): return self._s(200, fp.read_bytes(), "image/png")
+                if fp.exists():
+                    return self._s(200, fp.read_bytes(), "image/png")
                 return self._s(404, {"error": "no image"})
             return self._s(404, {"error": "not found"})
         except Exception as e:
             return self._s(500, {"error": str(e)})
     def do_POST(self):
-        if urlparse(self.path).path != "/api/correct": return self._s(404, {"error": "not found"})
+        if urlparse(self.path).path != "/api/correct":
+            return self._s(404, {"error": "not found"})
         n = int(self.headers.get("Content-Length", 0))
         rec = json.loads(self.rfile.read(n) or b"{}")
-        try: return self._s(200, save_corr(rec))
-        except Exception as e: return self._s(500, {"error": str(e)})
+        try:
+            return self._s(200, save_corr(rec))
+        except Exception as e:
+            return self._s(500, {"error": str(e)})
 
 
 def main():
     port = 8787
-    if "--port" in sys.argv: port = int(sys.argv[sys.argv.index("--port") + 1])
+    if "--port" in sys.argv:
+        port = int(sys.argv[sys.argv.index("--port") + 1])
     print(f"Correction UI -> http://localhost:{port}/   sites: {[s['id'] for s in sites()]}")
     ThreadingHTTPServer(("127.0.0.1", port), H).serve_forever()
 

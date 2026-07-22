@@ -32,11 +32,9 @@ def main():
     rej = df[df["shield_decision"] == "reject"]
     nlcd_dev = rej["shield_reasons"].str.contains("developed land").sum()
     nlcd_water = rej["shield_reasons"].str.contains("open water").sum()
-    linear = rej["shield_reasons"].str.contains("aspect").sum()
     # A candidate can list two reasons; count linear-only to avoid double count.
     linear_only = rej["shield_reasons"].apply(
         lambda s: "aspect" in s and "developed" not in s and "water" not in s).sum()
-    nlcd_total = nlcd_dev + nlcd_water
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5.5),
                                    gridspec_kw={"width_ratios": [1, 1.2]})

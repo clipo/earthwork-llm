@@ -20,7 +20,14 @@ prompt used at evaluation, and a rubric-formatted response ending in
 VERDICT / CONFIDENCE. Output: base64-inline JSONL for convert_jsonl_to_lf.py.
 """
 from __future__ import annotations
-import sys, os, io, json, math, time, base64, argparse, random
+import sys
+import io
+import json
+import math
+import time
+import base64
+import argparse
+import random
 import numpy as np
 import requests
 from pathlib import Path
@@ -80,8 +87,10 @@ def clean(dem):
 
 def hillshade(dem, az=315):
     gy, gx = np.gradient(dem)
-    sl = np.arctan(np.hypot(gy, gx)); asp = np.arctan2(-gx, gy)
-    z = math.radians(45); a = math.radians(az)
+    sl = np.arctan(np.hypot(gy, gx))
+    asp = np.arctan2(-gx, gy)
+    z = math.radians(45)
+    a = math.radians(az)
     return np.clip(np.cos(z) * np.cos(sl) + np.sin(z) * np.sin(sl) * np.cos(a - asp), 0, 1)
 
 
@@ -142,7 +151,8 @@ def composite(detail_img, wide_img):
     scale_w = w / wide_img.width
     w2 = wide_img.resize((w, int(wide_img.height * scale_w)))
     out = Image.new("RGB", (w, d2.height + w2.height + 6), (20, 20, 24))
-    out.paste(d2, (0, 0)); out.paste(w2, (0, d2.height + 6))
+    out.paste(d2, (0, 0))
+    out.paste(w2, (0, d2.height + 6))
     if out.width > 1100:
         s = 1100 / out.width
         out = out.resize((1100, int(out.height * s)))
@@ -150,7 +160,8 @@ def composite(detail_img, wide_img):
 
 
 def b64(img):
-    buf = io.BytesIO(); img.save(buf, format="PNG")
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
     return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()
 
 
@@ -217,9 +228,9 @@ def main():
         print(f"box {box}: cumulative feature points {len(feats)}", flush=True)
     if len(feats) < 500:
         raise SystemExit("too few OSM feature points harvested")
-    fx = np.array([f[0] for f in feats]); fy = np.array([f[1] for f in feats])
+    fx = np.array([f[0] for f in feats])
+    fy = np.array([f[1] for f in feats])
 
-    samples = []
     fh = open(args.out, "w")
 
     # ---- negatives: compact rises beside features ----
@@ -228,7 +239,8 @@ def main():
         attempts += 1
         i = rng.randrange(len(feats))
         x0, y0, lab = feats[i]
-        ang = rng.uniform(0, 2 * math.pi); off = rng.uniform(8, 35)
+        ang = rng.uniform(0, 2 * math.pi)
+        off = rng.uniform(8, 35)
         x, y = x0 + off * math.cos(ang), y0 + off * math.sin(ang)
         try:
             detail, dem, geo = detail_view(x, y)
@@ -249,7 +261,8 @@ def main():
                     {"type": "text", "text": PROMPT}]},
                 {"role": "assistant", "content": resp}],
                 "sample_type": "discrimination_negative", "feature": lab}
-            fh.write(json.dumps(rec) + "\n"); fh.flush()
+            fh.write(json.dumps(rec) + "\n")
+            fh.flush()
             n_done += 1
             if n_done % 25 == 0:
                 print(f"  negatives {n_done}/{args.n_neg} (attempts {attempts})", flush=True)
@@ -262,7 +275,8 @@ def main():
     while p_done < args.n_pos and attempts < args.n_pos * 12:
         attempts += 1
         box = BOXES[rng.randrange(len(BOXES))]
-        lon = rng.uniform(box[0], box[2]); lat = rng.uniform(box[1], box[3])
+        lon = rng.uniform(box[0], box[2])
+        lat = rng.uniform(box[1], box[3])
         x, y = tf.transform(lon, lat)
         if float(np.min(np.hypot(fx - x, fy - y))) < 200:
             continue
@@ -283,7 +297,8 @@ def main():
                     {"type": "text", "text": PROMPT}]},
                 {"role": "assistant", "content": resp}],
                 "sample_type": "discrimination_positive"}
-            fh.write(json.dumps(rec) + "\n"); fh.flush()
+            fh.write(json.dumps(rec) + "\n")
+            fh.flush()
             p_done += 1
             if p_done % 25 == 0:
                 print(f"  positives {p_done}/{args.n_pos} (attempts {attempts})", flush=True)

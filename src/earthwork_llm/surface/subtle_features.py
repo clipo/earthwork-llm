@@ -27,7 +27,7 @@ References:
 
 import logging
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Tuple
 
 import numpy as np
 from scipy import ndimage
@@ -549,7 +549,6 @@ def detect_trails(
             continue
 
         # Compute depth (how far below surrounding terrain)
-        trail_elevations = dem[rows, cols]
         local_tpi = tpi[rows, cols]
         depth = -np.mean(local_tpi)  # Negative TPI = below surroundings
 
@@ -559,7 +558,6 @@ def detect_trails(
         # Find endpoints (extremes along major axis)
         coords = np.column_stack([rows, cols])
         centroid = np.array(feat["centroid"])
-        eigenvectors = np.array([[1, 0], [0, 1]])  # Simplified
 
         # Recalculate for endpoints
         centered = coords - centroid

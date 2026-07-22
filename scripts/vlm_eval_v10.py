@@ -10,8 +10,17 @@ majority. Two eval sets:
 Env: VLM_API, VLM_MODEL, VLM_RUNS (default 5), VLM_TEMP (default 0.6).
 """
 from __future__ import annotations
-import sys, os, io, re, csv, json, time, math, argparse
-import numpy as np, requests, pandas as pd
+import sys
+import os
+import io
+import re
+import csv
+import time
+import math
+import argparse
+import numpy as np
+import requests
+import pandas as pd
 from pathlib import Path
 from PIL import Image, ImageDraw
 from pyproj import Transformer
@@ -37,8 +46,10 @@ def clean(dem):
 
 def hillshade(dem, az=315):
     gy, gx = np.gradient(dem)
-    sl = np.arctan(np.hypot(gy, gx)); asp = np.arctan2(-gx, gy)
-    z = math.radians(45); a = math.radians(az)
+    sl = np.arctan(np.hypot(gy, gx))
+    asp = np.arctan2(-gx, gy)
+    z = math.radians(45)
+    a = math.radians(az)
     return np.clip(np.cos(z) * np.cos(sl) + np.sin(z) * np.sin(sl) * np.cos(a - asp), 0, 1)
 
 
@@ -84,8 +95,8 @@ def parse(txt):
 
 def eskew_set():
     rows = [r for r in csv.DictReader(io.StringIO("".join(
-        l for l in open(os.environ.get("EARTHWORK_ABLATION_SET", "data/reference/mounds_seed.csv"))
-        if not l.lstrip().startswith("#"))))]
+        ln for ln in open(os.environ.get("EARTHWORK_ABLATION_SET", "data/reference/mounds_seed.csv"))
+        if not ln.lstrip().startswith("#"))))]
     out = []
     for r in rows:
         if not r.get("site_id"):
@@ -157,8 +168,10 @@ def main():
     df.to_csv(args.out, index=False)
     ev = df[df.pred.notna()]
     y, p = ev.label.astype(int), ev.pred.astype(int)
-    tp = int(((y == 1) & (p == 1)).sum()); fn = int(((y == 1) & (p == 0)).sum())
-    tn = int(((y == 0) & (p == 0)).sum()); fp = int(((y == 0) & (p == 1)).sum())
+    tp = int(((y == 1) & (p == 1)).sum())
+    fn = int(((y == 1) & (p == 0)).sum())
+    tn = int(((y == 0) & (p == 0)).sum())
+    fp = int(((y == 0) & (p == 1)).sum())
     print(f"\n===== {args.set} with {MODEL} =====")
     print(f"  confusion: TP={tp} FN={fn} TN={tn} FP={fp}")
     print(f"  positive recall:    {tp}/{tp+fn}")

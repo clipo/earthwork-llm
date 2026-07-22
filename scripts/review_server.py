@@ -13,11 +13,13 @@ Usage:
     python scripts/review_server.py --port 9000
 """
 from __future__ import annotations
-import csv, json, sys
+import csv
+import json
+import sys
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import urlparse
 
 REVIEW = Path("data/review")
 VERDICT_COLS = ["aoi", "id", "source", "score", "utm_x", "utm_y", "lat", "lon",
